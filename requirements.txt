@@ -1,3 +1,4 @@
 envparse
 slackclient
 click
+requests
