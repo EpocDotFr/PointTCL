@@ -1,7 +1,7 @@
 import requests
 
 
-class GrandLyonClient:
+class Client:
     """Wrapper for the Data Grand Lyon API
 
     See http://data.grandlyon.com/ for more information."""
@@ -40,6 +40,10 @@ class GrandLyonClient:
         """Get all TCL tram lines"""
         return self._call('tcl_sytral.tcllignetram/all.json')['values']
 
+    def get_velov_station_infos(self, name):
+        """Get the informations of a specific Velo'v station"""
+        return self._call('jcd_jcdecaux.jcdvelov/all.json', {'field': 'name', 'value': name})['values']
 
-class GrandLyonClientException(Exception):
+
+class GrandLyonException(Exception):
     pass

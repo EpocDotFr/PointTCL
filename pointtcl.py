@@ -1,6 +1,6 @@
 from envparse import env, Env
 from slackclient import SlackClient
-from grandlyonclient import GrandLyonClient
+import grandlyon
 import sys
 import logging
 import click
@@ -86,7 +86,7 @@ def cli():
     Env.read_envfile('.env')
 
     slack_client = SlackClient(env('SLACK_BOT_TOKEN'))
-    grandlyon_client = GrandLyonClient(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
+    grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
 
     with open('lines.json', 'r', encoding='utf-8') as f:
         all_lines = json.load(f)
