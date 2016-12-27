@@ -144,7 +144,7 @@ def get_all_tcl_lines():
     """Download and save all existing TCL lines"""
     global grandlyon_client, cache
 
-    all_lines = cache.get(b'all_lines')
+    all_lines = cache.get('all_lines')
 
     if not all_lines:
         all_lines = {
@@ -171,11 +171,9 @@ def get_all_tcl_lines():
             if tram_line['ligne'].lower() not in all_lines['tram']:
                 all_lines['tram'].append(tram_line['ligne'].lower())
 
-        cache.set(b'all_lines', json.dumps(all_lines))
+        cache.set('all_lines', all_lines)
 
-        return all_lines
-    else:
-        return json.loads(all_lines)
+    return all_lines
 
 
 if __name__ == '__main__':
