@@ -70,7 +70,7 @@ def handle_bot_mention(text, user, channel):
 
 @click.group()
 def cli():
-    """Run the script"""
+    """Python script that powers the Dealabs Slack bot who talks about TCL disruptions, and more in the future."""
     global slack_client, grandlyon_client, all_lines
 
     logging.basicConfig(
@@ -111,8 +111,8 @@ def run():
 
 
 @cli.command()
-def botid():
-    """Print the bot's ID"""
+def id():
+    """Print the Slack bot ID"""
     logging.info('Getting ' + env('SLACK_BOT_NAME') + '\'s ID...')
 
     api_call = slack_client.api_call('users.list')
@@ -128,8 +128,8 @@ def botid():
 
 
 @cli.command()
-def importallines():
-    """Import all existing TCL lines in a JSON file"""
+def lines():
+    """Download and save all existing TCL lines"""
     global grandlyon_client
 
     all_lines = {
@@ -162,7 +162,7 @@ def importallines():
         if tram_line['ligne'].lower() not in all_lines['tram']:
             all_lines['tram'].append(tram_line['ligne'].lower())
 
-    logging.info('Saving')
+    logging.info('Saving in lines.json')
 
     with open('lines.json', 'w', encoding='utf-8') as f:
         json.dump(all_lines, f)
