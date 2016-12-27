@@ -20,9 +20,7 @@ class Client:
 
         response_json = response.json()
 
-        # TODO exception (GrandLyonException) when logical API error occurs
-
-        return response_json
+        return response.json()
 
     def get_line_disruptions(self, line):
         """Get disruptions happening on a specific TCL line"""
@@ -43,7 +41,3 @@ class Client:
     def get_velov_station_infos(self, name):
         """Get the informations of a specific Velo'v station"""
         return self._call('rdata/jcd_jcdecaux.jcdvelov/all.json', {'field': 'name', 'value': name})['values']
-
-
-class GrandLyonException(Exception):
-    pass

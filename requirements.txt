@@ -2,3 +2,4 @@ envparse
 slackclient
 click
 requests
+diskcache

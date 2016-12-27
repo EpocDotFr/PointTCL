@@ -1,5 +1,6 @@
 from envparse import env, Env
 from slackclient import SlackClient
+import diskcache
 import grandlyon
 import sys
 import logging
@@ -13,6 +14,7 @@ slack_client = None
 grandlyon_client = None
 all_lines = None
 re_words = re.compile('\w+')
+cache = None
 
 
 def debug(message, err=False, terminate=False):
@@ -71,7 +73,7 @@ def handle_bot_mention(text, user, channel):
 @click.group()
 def cli():
     """Python script that powers the Dealabs Slack bot who talks about TCL disruptions, and more in the future."""
-    global slack_client, grandlyon_client, all_lines
+    global slack_client, grandlyon_client, all_lines, cache
 
     logging.basicConfig(
         format='%(asctime)s - %(levelname)s - %(message)s',
@@ -87,9 +89,8 @@ def cli():
 
     slack_client = SlackClient(env('SLACK_BOT_TOKEN'))
     grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
-
-    with open('lines.json', 'r', encoding='utf-8') as f:
-        all_lines = json.load(f)
+    cache = diskcache.Cache('storage/cache')
+    all_lines = get_all_tcl_lines()
 
 @cli.command()
 def run():
@@ -128,44 +129,53 @@ def id():
 
 
 @cli.command()
-def lines():
+def cc():
+    """Clear the internal cache"""
+    global cache
+
+    logging.info('Clearing cache')
+
+    cache.clear()
+
+    logging.info('Cache cleared')
+
+
+def get_all_tcl_lines():
     """Download and save all existing TCL lines"""
-    global grandlyon_client
+    global grandlyon_client, cache
 
-    all_lines = {
-        'bus': [],
-        'subway_funicular': [],
-        'tram': []
-    }
+    all_lines = cache.get(b'all_lines')
 
-    logging.info('Downloading bus lines')
+    if not all_lines:
+        all_lines = {
+            'bus': [],
+            'subway_funicular': [],
+            'tram': []
+        }
 
-    bus_lines = grandlyon_client.get_all_bus_lines()
+        bus_lines = grandlyon_client.get_all_bus_lines()
 
-    for bus_line in bus_lines:
-        if bus_line['ligne'].lower() not in all_lines['bus']:
-            all_lines['bus'].append(bus_line['ligne'].lower())
+        for bus_line in bus_lines:
+            if bus_line['ligne'].lower() not in all_lines['bus']:
+                all_lines['bus'].append(bus_line['ligne'].lower())
 
-    logging.info('Downloading subway and funicular lines')
+        subway_funicular_lines = grandlyon_client.get_all_subway_funicular_lines()
 
-    subway_funicular_lines = grandlyon_client.get_all_subway_funicular_lines()
+        for subway_funicular_line in subway_funicular_lines:
+            if subway_funicular_line['ligne'].lower() not in all_lines['subway_funicular']:
+                all_lines['subway_funicular'].append(subway_funicular_line['ligne'].lower())
 
-    for subway_funicular_line in subway_funicular_lines:
-        if subway_funicular_line['ligne'].lower() not in all_lines['subway_funicular']:
-            all_lines['subway_funicular'].append(subway_funicular_line['ligne'].lower())
+        tram_lines = grandlyon_client.get_all_tram_lines()
 
-    logging.info('Downloading tram lines')
+        for tram_line in tram_lines:
+            if tram_line['ligne'].lower() not in all_lines['tram']:
+                all_lines['tram'].append(tram_line['ligne'].lower())
 
-    tram_lines = grandlyon_client.get_all_tram_lines()
+        cache.set(b'all_lines', json.dumps(all_lines))
 
-    for tram_line in tram_lines:
-        if tram_line['ligne'].lower() not in all_lines['tram']:
-            all_lines['tram'].append(tram_line['ligne'].lower())
-
-    logging.info('Saving in lines.json')
-
-    with open('lines.json', 'w', encoding='utf-8') as f:
-        json.dump(all_lines, f)
+        return all_lines
+    else:
+        return json.loads(all_lines)
 
 
 if __name__ == '__main__':
