@@ -18,13 +18,17 @@ class Client:
 
         response.raise_for_status()
 
-        response_json = response.json()
-
         return response.json()
 
-    def get_line_disruptions(self, line):
+    def get_line_disruptions(self, line=None):
         """Get disruptions happening on a specific TCL line"""
-        return self._call('rdata/tcl_sytral.tclalertetrafic/all.json', {'field': 'ligne_com', 'value': line})['values']
+        parameters = {}
+
+        if line:
+            parameters['field'] = 'ligne_com'
+            parameters['value'] = line
+
+        return self._call('rdata/tcl_sytral.tclalertetrafic/all.json', parameters)['values']
 
     def get_all_bus_lines(self):
         """Get all TCL bus lines"""

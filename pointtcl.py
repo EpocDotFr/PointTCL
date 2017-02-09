@@ -1,5 +1,6 @@
 from envparse import env, Env
 from slackclient import SlackClient
+from commands import *
 import diskcache
 import grandlyon
 import sys
@@ -16,6 +17,11 @@ all_lines = None
 re_words = re.compile('\w+')
 cache = None
 
+available_commands = [
+    MetroStatusCommand(),
+    TramStatusCommand()
+]
+
 
 def debug(message, err=False, terminate=False):
     """Log a regular or error message to the standard output, optionally terminating the script."""
@@ -23,6 +29,38 @@ def debug(message, err=False, terminate=False):
 
     if terminate:
         sys.exit(1)
+
+
+def parse_message(message):
+    message = re.sub('[' + string.punctuation + ']', '', message.strip().lower())
+
+    if not message:
+        raise ValueError('Empty message')
+    
+    message_words = message.split()
+    
+    if len(message_words) == 0:
+        raise ValueError('Empty command')
+
+    current_command = None
+
+    for available_command in available_commands:
+        if message_words[0] in available_command.get_names():
+            current_command = available_command
+            break;
+
+    if not current_command:
+        raise NameError('Invalid command')
+
+    number_of_required_params = len(current_command.get_params())
+    number_of_given_params = len(message_words[1:])
+
+    if number_of_given_params < number_of_required_params:
+        raise ValueError('Not enough parameters')
+    
+    params = message_words[1:number_of_required_params + 1]
+
+    return getattr(current_command, 'run')(*params)
 
 
 def parse_slack_message(slack_rtm_messages):
