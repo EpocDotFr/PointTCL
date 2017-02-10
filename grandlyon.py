@@ -1,4 +1,5 @@
 import requests
+import arrow
 
 
 __all__ = [
@@ -34,6 +35,8 @@ class Client:
             gl_line = gl_disruption['ligne_com'].rstrip('AB').lower() # Remove the trailing A or B at the end of the line name (seems to be the line direction)
 
             if gl_line == line and gl_disruption['message'] not in disruptions:
+                disrupted_since = arrow.get(gl_disruption['debut'])
+                
                 disruptions.append(gl_disruption['message'])
 
         return disruptions

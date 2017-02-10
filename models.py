@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_utils import JSONType
+from sqlalchemy_utils import JSONType, ArrowType
 from enum import Enum
 import sqlalchemy
 
@@ -26,13 +26,15 @@ class TclLine(Model):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     type = sqlalchemy.Column(sqlalchemy.Enum(TclLineType), nullable=False)
     is_disrupted = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    disrupted_since = sqlalchemy.Column(ArrowType, default=None)
     disruption_reasons = sqlalchemy.Column(JSONType, default=[])
 
-    def __init__(self, name=None, type=None, is_disrupted=False, disruption_reason=[]):
+    def __init__(self, name=None, type=None, is_disrupted=False, disrupted_since=None, disruption_reasons=[]):
         self.name = name
         self.type = type
         self.is_disrupted = is_disrupted
-        self.disruption_reason = disruption_reason
+        self.disrupted_since = disrupted_since
+        self.disruption_reasons = disruption_reasons
 
     def __repr__(self):
         return '<TclLine> #{} : {}'.format(self.id, self.name)
