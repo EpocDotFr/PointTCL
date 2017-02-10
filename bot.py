@@ -64,7 +64,7 @@ class Bot:
             logging.error('Connection failed')
 
     def parse_slack_message(self, slack_rtm_messages):
-        """Parse every incoming message and check if one or more was intented for the bot"""
+        """Parse every incoming message and check if one or more was intented for the bot."""
         if slack_rtm_messages and len(slack_rtm_messages) > 0:
             for message in slack_rtm_messages:
                 # Make sure it was a normal text message containing the bot's name
