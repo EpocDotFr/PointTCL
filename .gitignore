@@ -1,5 +1,5 @@
-storage/cache
 .env
+storage/data/db.sqlite
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio

@@ -1,4 +1,5 @@
 import inspect
+import grandlyon
 
 
 __all__ = [
@@ -12,7 +13,7 @@ __all__ = [
 
 class Command:
     names = []
-    slack_client = None
+    bot = None
 
     user = None
     channel = None
@@ -31,10 +32,25 @@ class Command:
 
 
 class HelpCommand(Command):
-    names = ['aide', 'help']
+    names = ['aide', 'help', 'comment', 'dafuq', 'wut']
     
     def run(self):
-        return 'OK'
+        help_answer = """
+Déjà : bonjour.
+
+Comment ça marche : en me mentionnant, le premier mot désigne sur quelle type de ligne vous souhaitez avoir des infos. Le deuxième le nom de la ligne.
+
+Exemples :
+
+> @pointtcl métro d
+> @pointtcl tram t4
+> @pointtcl bus 31 bordel
+> @pointtcl funi f2
+
+En retour je vous dit s'il y a des merdes ou pas. Rien de compliqué.
+"""
+
+        self.bot.say(help_answer, self.channel)
 
 
 class MetroStatusCommand(Command):

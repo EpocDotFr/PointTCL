@@ -20,12 +20,27 @@ class Bot:
     available_commands = []
     slack_client = None
 
-    def __init__(self, name, token, id, available_commands):
+    def __init__(self, name, token, id, available_commands=[]):
         self.name = name
         self.token = token
         self.id = id
         self.available_commands = available_commands
         self.slack_client = SlackClient(self.token)
+
+    def get_id(self):
+        bot_id = None
+
+        result = self.slack_client.api_call('users.list')
+
+        if result['ok']:
+            users = result['members']
+
+            for user in users:
+                if 'name' in user and user['name'] == self.name:
+                    bot_id = user['id']
+                    break
+
+        return bot_id
 
     def run(self):
         logging.info('Connecting to Slack RTM')
@@ -40,13 +55,13 @@ class Bot:
                     try:
                         self.parse_message(text, user, channel)
                     except ValueError as ve:
-                        self.say('empty_message', channel, user=user)
+                        self.say_random('empty_message', channel, user=user)
                     except NameError as ne:
-                        self.say('invalid_command', channel, user=user)
+                        self.say_random('invalid_command', channel, user=user)
 
                 time.sleep(1)  # Poll for new messages every 1 second
         else:
-            logging.warning('Connection failed')
+            logging.error('Connection failed')
 
     def parse_slack_message(self, slack_rtm_messages):
         """Parse every incoming message and check if one or more was intented for the bot"""
@@ -58,20 +73,24 @@ class Bot:
 
         return None, None, None
 
-    def say(self, message_id, channel, **kvargs):
+    def say(self, text, channel):
+        self.slack_client.api_call(
+            'chat.postMessage',
+            channel=channel,
+            text=text
+        )
+
+    def say_random(self, message_id, channel, **kvargs):
         if message_id not in answers:
             logging.error('Anwser ID ' + answers + ' does\'t exists')
             return
 
-        self.slack_client.api_call(
-            'chat.postMessage',
-            channel=channel,
-            text=random.choice(answers[message_id]).format(**kvargs)
-        )
+        self.say(random.choice(answers[message_id]).format(**kvargs), channel)
 
     def parse_message(self, message, user, channel):
-        message = re.sub('<.*>', '', message)
-        message = re.sub('[' + string.punctuation + ']', '', message.strip().lower())
+        message = re.sub('^<.*>', '', message) # Remove the mention at the beginning of the message
+        message = message.strip().lower() # Remove all whitespace chars at the beginning and the end of the message and convert the case to lowercase
+        message = re.sub('[' + string.punctuation + ']', '', message) # Remove all punctuation chars
 
         if not message:
             raise ValueError('Empty message')
@@ -84,7 +103,7 @@ class Bot:
         current_command = None
 
         for available_command in self.available_commands:
-            if message_words[0] in available_command.get_names():
+            if message_words[0] in available_command.get_names(): # The first word is always the command name
                 current_command = available_command
                 break
 
@@ -99,8 +118,8 @@ class Bot:
 
         params = message_words[1:number_of_required_params + 1]
 
-        current_command.slack_client = self.slack_client
+        current_command.bot = self
         current_command.user = user
         current_command.channel = channel
 
-        return getattr(current_command, 'run')(*params)
+        getattr(current_command, 'run')(*params)

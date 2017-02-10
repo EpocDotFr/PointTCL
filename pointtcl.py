@@ -1,11 +1,10 @@
 from envparse import env, Env
 from slackclient import SlackClient
-from commands import *
 from bot import *
-import grandlyon
 import sys
 import logging
 import click
+import commands
 
 
 @click.group()
@@ -26,13 +25,7 @@ def cli():
 @cli.command()
 def run():
     """Run the bot himself"""
-    available_commands = [
-        HelpCommand(),
-        MetroStatusCommand(),
-        TramStatusCommand(),
-        BusStatusCommand(),
-        FunicularStatusCommand()
-    ]
+    available_commands = [getattr(commands, command)() for command in commands.__all__]
 
     bot = Bot(env('SLACK_BOT_NAME'), env('SLACK_BOT_TOKEN'), env('SLACK_BOT_ID'), available_commands)
     bot.run()
@@ -40,22 +33,21 @@ def run():
 
 @cli.command()
 def id():
-    """Print the Slack bot ID"""
-    logging.info('Getting ' + env('SLACK_BOT_NAME') + '\'s ID...')
+    bot = Bot(env('SLACK_BOT_NAME'), env('SLACK_BOT_TOKEN'), env('SLACK_BOT_ID'))
 
-    slack_client = SlackClient(env('SLACK_BOT_TOKEN'))
+    logging.info('Getting bot ID...')
 
-    result = slack_client.api_call('users.list')
+    bot_id = bot.get_id()
 
-    if result['ok']:
-        users = result['members']
-
-        for user in users:
-            if 'name' in user and user['name'] == env('SLACK_BOT_NAME'):
-                logging.info('Bot ID for ' + user['name'] + ' is ' + user['id'])
-                break
+    if bot_id:
+        logging.info('Bot ID is ' + bot_id)
     else:
-        logging.error('Could not find bot user with the name ' + env('SLACK_BOT_NAME'))
+        logging.error('Could not find bot user')
+
+
+@cli.command()
+def seed():
+    """Seed the database"""
 
 
 # def get_all_tcl_lines():
