@@ -1,4 +1,5 @@
 from slackclient import SlackClient
+from answers import answers
 import re
 import string
 import logging
@@ -39,9 +40,9 @@ class Bot:
                     try:
                         self.parse_message(text, user, channel)
                     except ValueError as ve:
-                        self.say('<@' + user + '> On dirait que vous avez envoyé un message vide.', channel)
+                        self.say('empty_message', channel, user=user)
                     except NameError as ne:
-                        self.say('<@' + user + '> Vous m\'avez envoyé une commande invalide.', channel)
+                        self.say('invalid_command', channel, user=user)
 
                 time.sleep(1)  # Poll for new messages every 1 second
         else:
@@ -57,16 +58,20 @@ class Bot:
 
         return None, None, None
 
-    def say(self, text, channel):
+    def say(self, message_id, channel, **kvargs):
+        if message_id not in answers:
+            logging.error('Anwser ID ' + answers + ' does\'t exists')
+            return
+
         self.slack_client.api_call(
             'chat.postMessage',
             channel=channel,
-            text=text
+            text=random.choice(answers[message_id]).format(**kvargs)
         )
 
     def parse_message(self, message, user, channel):
-        message = re.sub('[' + string.punctuation + ']', '', message.strip().lower())
         message = re.sub('<.*>', '', message)
+        message = re.sub('[' + string.punctuation + ']', '', message.strip().lower())
 
         if not message:
             raise ValueError('Empty message')
