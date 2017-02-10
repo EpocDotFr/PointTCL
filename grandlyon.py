@@ -1,6 +1,11 @@
 import requests
 
 
+__all__ = [
+    'Client'
+]
+
+
 class Client:
     """Wrapper for the Grand Lyon Data API
 

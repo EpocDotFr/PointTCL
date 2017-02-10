@@ -18,13 +18,15 @@ class Bot:
     id = None
 
     available_commands = []
+    database_session = None
     slack_client = None
 
-    def __init__(self, name, token, id, available_commands=[]):
+    def __init__(self, name, token, id, available_commands=[], database_session=None):
         self.name = name
         self.token = token
         self.id = id
         self.available_commands = available_commands
+        self.database_session = database_session
         self.slack_client = SlackClient(self.token)
 
     def get_id(self):
@@ -43,8 +45,6 @@ class Bot:
         return bot_id
 
     def run(self):
-        logging.info('Connecting to Slack RTM')
-
         if self.slack_client.rtm_connect():
             logging.info(self.name + ' bot connected and running')
 

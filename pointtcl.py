@@ -1,14 +1,35 @@
 from envparse import env, Env
 from slackclient import SlackClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from bot import *
+from models import *
 import sys
 import logging
 import click
 import commands
+import grandlyon
+
+
+def get_database_session():
+    Session = sessionmaker(bind=create_engine('sqlite:///storage/data/db.sqlite'))
+
+    return Session()
+
+
+def get_bot_instance(available_commands=[], database_session=None):
+    return Bot(
+        name=env('SLACK_BOT_NAME'),
+        token=env('SLACK_BOT_TOKEN'),
+        id=env('SLACK_BOT_ID'),
+        available_commands=available_commands,
+        database_session=database_session
+    )
 
 
 @click.group()
 def cli():
+    """Entry point for the script"""
     logging.basicConfig(
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%d/%m/%Y %H:%M:%S',
@@ -23,17 +44,21 @@ def cli():
 
 
 @cli.command()
-def run():
+def runbot():
     """Run the bot himself"""
     available_commands = [getattr(commands, command)() for command in commands.__all__]
+    database_session = get_database_session()
 
-    bot = Bot(env('SLACK_BOT_NAME'), env('SLACK_BOT_TOKEN'), env('SLACK_BOT_ID'), available_commands)
+    bot = get_bot_instance(available_commands, database_session)
+
+    logging.info('Connecting to Slack')
+
     bot.run()
 
 
 @cli.command()
-def id():
-    bot = Bot(env('SLACK_BOT_NAME'), env('SLACK_BOT_TOKEN'), env('SLACK_BOT_ID'))
+def botid():
+    bot = get_bot_instance()
 
     logging.info('Getting bot ID...')
 
@@ -46,44 +71,75 @@ def id():
 
 
 @cli.command()
-def seed():
-    """Seed the database"""
+def createdb():
+    """Create and seed the database"""
+    database_session = get_database_session()
 
+    logging.info('Creating the database')
 
-# def get_all_tcl_lines():
-#     """Download and save all existing TCL lines"""
-#     grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
-#
-#     all_lines = cache.get('all_lines')
-#
-#     if not all_lines:
-#         all_lines = {
-#             'bus': [],
-#             'subway_funicular': [],
-#             'tram': []
-#         }
-#
-#         bus_lines = grandlyon_client.get_all_bus_lines()
-#
-#         for bus_line in bus_lines:
-#             if bus_line['ligne'].lower() not in all_lines['bus']:
-#                 all_lines['bus'].append(bus_line['ligne'].lower())
-#
-#         subway_funicular_lines = grandlyon_client.get_all_subway_funicular_lines()
-#
-#         for subway_funicular_line in subway_funicular_lines:
-#             if subway_funicular_line['ligne'].lower() not in all_lines['subway_funicular']:
-#                 all_lines['subway_funicular'].append(subway_funicular_line['ligne'].lower())
-#
-#         tram_lines = grandlyon_client.get_all_tram_lines()
-#
-#         for tram_line in tram_lines:
-#             if tram_line['ligne'].lower() not in all_lines['tram']:
-#                 all_lines['tram'].append(tram_line['ligne'].lower())
-#
-#         cache.set('all_lines', all_lines)
-#
-#     return all_lines
+    TclLine.metadata.drop_all(bind=database_session.connection())
+    TclLine.metadata.create_all(bind=database_session.connection())
+
+    grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
+
+    logging.info('Getting all bus lines')
+
+    # Bus lines
+    bus_lines = grandlyon_client.get_all_bus_lines()
+    all_bus_lines = []
+
+    for bus_line in bus_lines:
+        name = bus_line['ligne'].lower()
+
+        if name not in all_bus_lines:
+            all_bus_lines.append(name)
+
+            database_session.add(TclLine(
+                name=name,
+                type=TclLineType.BUS
+            ))
+
+    database_session.commit()
+
+    logging.info('Getting all subway and funicular lines')
+
+    # Subway and funicular lines
+    subway_funicular_lines = grandlyon_client.get_all_subway_funicular_lines()
+    all_subway_funicular_lines = []
+
+    for subway_funicular_line in subway_funicular_lines:
+        name = subway_funicular_line['ligne'].lower()
+
+        if name not in all_subway_funicular_lines:
+            all_subway_funicular_lines.append(name)
+
+            database_session.add(TclLine(
+                name=name,
+                type=TclLineType.FUNICULAR if name.startswith('f') else TclLineType.SUBWAY
+            ))
+
+    database_session.commit()
+
+    logging.info('Getting all tram lines')
+
+    # Tram lines
+    tram_lines = grandlyon_client.get_all_tram_lines()
+    all_tram_lines = []
+
+    for tram_line in tram_lines:
+        name = tram_line['ligne'].lower()
+
+        if name not in all_tram_lines:
+            all_tram_lines.append(name)
+
+            database_session.add(TclLine(
+                name=name,
+                type=TclLineType.TRAM
+            ))
+
+    database_session.commit()
+
+    logging.info('Done')
 
 
 if __name__ == '__main__':
