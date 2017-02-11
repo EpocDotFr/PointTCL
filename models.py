@@ -36,7 +36,7 @@ class TclLine(Base):
 
     @staticmethod
     def find_line(type, name):
-        q = db_session.query().filter(TclLine.type == type)
+        q = db_session.query(TclLine).filter(TclLine.type == type)
         q = q.filter(TclLine.name == name)
 
         return q.first()
