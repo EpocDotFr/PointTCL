@@ -14,6 +14,14 @@ answers = {
         '<@{user}> Mais encore ?'
     ],
     'unknown_subway_line': [
-        '<@{user}> Je connais pas de ligne de tromé "{line}".'
+        '<@{user}> Je connais pas de ligne de tromé {line}.',
+        '<@{user}> Je crois que la ligne de métro {line} n\'existe pas.',
+        '<@{user}> Le métro {line} doit exister à Paris mais pas chez nous, sorry.'
+    ],
+    'subway_line_disrupted': [
+        ':rotating_light: Merde sur le métro {line}.'
+    ],
+    'subway_line_ok': [
+        'RàS sur le métro {line}.'
     ]
 }

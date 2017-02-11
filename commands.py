@@ -57,11 +57,16 @@ class SubwayStatusCommand(Command):
     names = ['métro', 'metro']
 
     def run(self, line):
-        line_object = TclLine.query.get_for_home(TclLineType.SUBWAY, line)
+        line_object = TclLineQuery.find_line(TclLineType.SUBWAY, line)
 
         if not line_object:
-            self.bot.say_random('unknown_subway_line', self.channel, user=self.user, line=line)
+            self.bot.say_random('unknown_subway_line', self.channel, user=self.user, line=line.upper())
+            return
 
+        if line_object.is_disrupted:
+            self.bot.say_random('subway_line_disrupted', self.channel, user=self.user, line=line.upper())
+        else:
+            self.bot.say_random('subway_line_ok', self.channel, user=self.user, line=line.upper())
 
 
 class TramStatusCommand(Command):

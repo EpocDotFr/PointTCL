@@ -1,7 +1,6 @@
-from database import Base
+from database import Base, db_session
 from sqlalchemy_utils import JSONType, ArrowType
 from enum import Enum
-from sqlalchemy.orm import Query
 import sqlalchemy
 
 
@@ -18,18 +17,17 @@ class TclLineType(Enum):
     FUNICULAR = 'FUNICULAR'
 
 
-class TclLineQuery(Query):
-    def get_for_home(self, type, name):
-        q = self.filter(TclLine.type == type)
+class TclLineQuery:
+    @staticmethod
+    def find_line(type, name):
+        q = db_session.query().filter(TclLine.type == type)
         q = q.filter(TclLine.name == name)
 
         return q.first()
 
 
 class TclLine(Base):
-
     __tablename__ = 'tcl_lines'
-    query_class = TclLineQuery
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)

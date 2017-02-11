@@ -91,6 +91,8 @@ class Bot:
         message = message.strip().lower() # Remove all whitespace chars at the beginning and the end of the message and convert the case to lowercase
         message = re.sub('[' + string.punctuation + ']', '', message) # Remove all punctuation chars
 
+        logging.info('New message: ' + message)
+
         if not message:
             raise ValueError('Empty message')
 
