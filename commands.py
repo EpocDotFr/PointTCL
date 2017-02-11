@@ -57,7 +57,7 @@ class SubwayStatusCommand(Command):
     names = ['métro', 'metro']
 
     def run(self, line):
-        line_object = TclLineQuery.find_line(TclLineType.SUBWAY, line)
+        line_object = TclLine.find_line(TclLineType.SUBWAY, line)
 
         if not line_object:
             self.bot.say_random('unknown_subway_line', self.channel, user=self.user, line=line.upper())

@@ -17,15 +17,6 @@ class TclLineType(Enum):
     FUNICULAR = 'FUNICULAR'
 
 
-class TclLineQuery:
-    @staticmethod
-    def find_line(type, name):
-        q = db_session.query().filter(TclLine.type == type)
-        q = q.filter(TclLine.name == name)
-
-        return q.first()
-
-
 class TclLine(Base):
     __tablename__ = 'tcl_lines'
 
@@ -42,6 +33,13 @@ class TclLine(Base):
         self.is_disrupted = is_disrupted
         self.disrupted_since = disrupted_since
         self.disruption_reasons = disruption_reasons
+
+    @staticmethod
+    def find_line(type, name):
+        q = db_session.query().filter(TclLine.type == type)
+        q = q.filter(TclLine.name == name)
+
+        return q.first()
 
     def __repr__(self):
         return '<TclLine> #{} : {}'.format(self.id, self.name)
