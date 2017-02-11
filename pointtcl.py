@@ -1,7 +1,6 @@
 from envparse import env, Env
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from bot import *
+from database import db_session, init_db
 from models import *
 import sys
 import logging
@@ -10,19 +9,12 @@ import commands
 import grandlyon
 
 
-def get_database_session():
-    Session = sessionmaker(bind=create_engine('sqlite:///storage/data/db.sqlite'))
-
-    return Session()
-
-
-def get_bot_instance(available_commands=[], database_session=None):
+def get_bot_instance(available_commands=[]):
     return Bot(
         name=env('SLACK_BOT_NAME'),
         token=env('SLACK_BOT_TOKEN'),
         id=env('SLACK_BOT_ID'),
-        available_commands=available_commands,
-        database_session=database_session
+        available_commands=available_commands
     )
 
 
@@ -46,9 +38,8 @@ def cli():
 def runbot():
     """Run the bot himself"""
     available_commands = [getattr(commands, command)() for command in commands.__all__]
-    database_session = get_database_session()
 
-    bot = get_bot_instance(available_commands, database_session)
+    bot = get_bot_instance(available_commands)
 
     logging.info('Connecting to Slack')
 
@@ -71,16 +62,15 @@ def botid():
 
 
 @cli.command()
-def createdb():
+def initdb():
     """Create and seed the database"""
-    database_session = get_database_session()
+    logging.info('Deleting and creating the database')
 
-    logging.info('Creating the database')
-
-    TclLine.metadata.drop_all(bind=database_session.connection())
-    TclLine.metadata.create_all(bind=database_session.connection())
+    init_db()
 
     grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
+
+    logging.info('Seeding the database')
 
     logging.info('Getting all bus lines')
 
@@ -94,12 +84,12 @@ def createdb():
         if name not in all_bus_lines:
             all_bus_lines.append(name)
 
-            database_session.add(TclLine(
+            db_session.add(TclLine(
                 name=name,
                 type=TclLineType.BUS
             ))
 
-    database_session.commit()
+    db_session.commit()
 
     logging.info('Getting all subway and funicular lines')
 
@@ -113,12 +103,12 @@ def createdb():
         if name not in all_subway_funicular_lines:
             all_subway_funicular_lines.append(name)
 
-            database_session.add(TclLine(
+            db_session.add(TclLine(
                 name=name,
                 type=TclLineType.FUNICULAR if name.startswith('f') else TclLineType.SUBWAY
             ))
 
-    database_session.commit()
+    db_session.commit()
 
     logging.info('Getting all tram lines')
 
@@ -132,12 +122,12 @@ def createdb():
         if name not in all_tram_lines:
             all_tram_lines.append(name)
 
-            database_session.add(TclLine(
+            db_session.add(TclLine(
                 name=name,
                 type=TclLineType.TRAM
             ))
 
-    database_session.commit()
+    db_session.commit()
 
     logging.info('Done')
 

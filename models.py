@@ -1,4 +1,4 @@
-from sqlalchemy.ext.declarative import declarative_base
+from database import Base
 from sqlalchemy_utils import JSONType, ArrowType
 from enum import Enum
 from sqlalchemy.orm import Query
@@ -9,9 +9,6 @@ __all__ = [
     'TclLineType',
     'TclLine'
 ]
-
-
-Model = declarative_base()
 
 
 class TclLineType(Enum):
@@ -29,7 +26,7 @@ class TclLineQuery(Query):
         return q.first()
 
 
-class TclLine(Model):
+class TclLine(Base):
 
     __tablename__ = 'tcl_lines'
     query_class = TclLineQuery

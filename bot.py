@@ -1,5 +1,6 @@
 from slackclient import SlackClient
 from answers import answers
+from database import db_session
 import re
 import string
 import logging
@@ -18,15 +19,13 @@ class Bot:
     id = None
 
     available_commands = []
-    database_session = None
     slack_client = None
 
-    def __init__(self, name, token, id, available_commands=[], database_session=None):
+    def __init__(self, name, token, id, available_commands=[]):
         self.name = name
         self.token = token
         self.id = id
         self.available_commands = available_commands
-        self.database_session = database_session
         self.slack_client = SlackClient(self.token)
 
     def get_id(self):
