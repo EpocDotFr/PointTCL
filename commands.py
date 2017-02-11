@@ -1,10 +1,10 @@
+from models import *
 import inspect
-import grandlyon
 
 
 __all__ = [
     'HelpCommand',
-    'MetroStatusCommand',
+    'SubwayStatusCommand',
     'TramStatusCommand',
     'BusStatusCommand',
     'FunicularStatusCommand'
@@ -17,13 +17,13 @@ class Command:
 
     user = None
     channel = None
-    
+
     def get_names(self):
         if not self.names:
             raise ValueError('self.names must contain at least one name')
-        
+
         return self.names
-    
+
     def get_params(self):
         return inspect.signature(self.run).parameters.keys()
 
@@ -33,7 +33,7 @@ class Command:
 
 class HelpCommand(Command):
     names = ['aide', 'help', 'comment', 'dafuq', 'wut']
-    
+
     def run(self):
         help_answer = """
 Déjà : bonjour.
@@ -53,29 +53,33 @@ En retour je vous dit s'il y a des merdes ou pas. Rien de compliqué.
         self.bot.say(help_answer, self.channel)
 
 
-class MetroStatusCommand(Command):
+class SubwayStatusCommand(Command):
     names = ['métro', 'metro']
 
     def run(self, line):
-        return 'OK'
+        line_object = TclLine.query.get_for_home(TclLineType.SUBWAY, line)
+
+        if not line_object:
+            self.bot.say_random('unknown_subway_line', self.channel, user=self.user, line=line)
+
 
 
 class TramStatusCommand(Command):
     names = ['tram']
-    
+
     def run(self, line):
-        return 'OK'
+        pass
 
 
 class BusStatusCommand(Command):
     names = ['bus']
 
     def run(self, line):
-        return 'OK'
+        pass
 
 
 class FunicularStatusCommand(Command):
     names = ['funiculaire', 'funi']
 
     def run(self, line):
-        return 'OK'
+        pass

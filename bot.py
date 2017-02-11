@@ -54,9 +54,9 @@ class Bot:
                 if text and channel:
                     try:
                         self.parse_message(text, user, channel)
-                    except ValueError as ve:
+                    except ValueError:
                         self.say_random('empty_message', channel, user=user)
-                    except NameError as ne:
+                    except NameError:
                         self.say_random('invalid_command', channel, user=user)
 
                 time.sleep(1)  # Poll for new messages every 1 second

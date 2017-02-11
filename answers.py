@@ -12,5 +12,8 @@ answers = {
         '<@{user}> C\'est malin d\'envoyer un message vide.',
         '<@{user}> Un message vide ? A part répondre avec cette page Wikipédia, je peux rien faire : https://fr.wikipedia.org/wiki/Vide_(physique)',
         '<@{user}> Mais encore ?'
+    ],
+    'unknown_subway_line': [
+        '<@{user}> Je connais pas de ligne de tromé "{line}".'
     ]
 }

@@ -36,7 +36,7 @@ class Client:
 
             if gl_line == line and gl_disruption['message'] not in disruptions:
                 disrupted_since = arrow.get(gl_disruption['debut'])
-                
+
                 disruptions.append(gl_disruption['message'])
 
         return disruptions

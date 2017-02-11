@@ -1,5 +1,4 @@
 from envparse import env, Env
-from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bot import *
@@ -29,7 +28,7 @@ def get_bot_instance(available_commands=[], database_session=None):
 
 @click.group()
 def cli():
-    """Entry point for the script"""
+    """Point TCL Slack bot"""
     logging.basicConfig(
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%d/%m/%Y %H:%M:%S',
@@ -58,6 +57,7 @@ def runbot():
 
 @cli.command()
 def botid():
+    """Print the bot ID"""
     bot = get_bot_instance()
 
     logging.info('Getting bot ID...')

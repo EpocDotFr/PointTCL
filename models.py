@@ -1,6 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import JSONType, ArrowType
 from enum import Enum
+from sqlalchemy.orm import Query
 import sqlalchemy
 
 
@@ -12,6 +13,7 @@ __all__ = [
 
 Model = declarative_base()
 
+
 class TclLineType(Enum):
     SUBWAY = 'SUBWAY'
     TRAM = 'TRAM'
@@ -19,8 +21,18 @@ class TclLineType(Enum):
     FUNICULAR = 'FUNICULAR'
 
 
+class TclLineQuery(Query):
+    def get_for_home(self, type, name):
+        q = self.filter(TclLine.type == type)
+        q = q.filter(TclLine.name == name)
+
+        return q.first()
+
+
 class TclLine(Model):
+
     __tablename__ = 'tcl_lines'
+    query_class = TclLineQuery
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
