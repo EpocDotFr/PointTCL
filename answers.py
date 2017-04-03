@@ -6,7 +6,7 @@ answers = {
         '<@{user}> https://youareagoodmama.files.wordpress.com/2016/07/dafuq.jpg',
         '<@{user}> Désolé, j\'ai rien capté.',
         '<@{user}> Certes. (Rien compris).',
-        '<@{user}> https://www.youtube.com/results?search_query=kamoulox'
+        '<@{user}> Wut?'
     ],
     'empty_message': [
         '<@{user}> C\'est malin d\'envoyer un message vide.',
@@ -14,14 +14,42 @@ answers = {
         '<@{user}> Mais encore ?'
     ],
     'unknown_subway_line': [
-        '<@{user}> Je connais pas de ligne de tromé {line}.',
-        '<@{user}> Je crois que la ligne de métro {line} n\'existe pas.',
-        '<@{user}> Le métro {line} doit exister à Paris mais pas chez nous, sorry.'
+        '<@{user}> Le métro *{line}* m\'est inconnu.',
+        '<@{user}> Je crois que la ligne de métro *{line}* n\'existe pas.',
+        '<@{user}> Le métro *{line}* est inconnu au bataillon.'
     ],
     'subway_line_disrupted': [
-        ':rotating_light: Merde sur le métro {line}.'
+        ':rotating_light: :metro: Perturbation sur le métro *{line}*.',
+        ':warning: :metro: Le métro *{line}* rencontre des soucis.'
     ],
     'subway_line_ok': [
-        'RàS sur le métro {line}.'
+        ':heavy_check_mark: :metro: RàS sur le métro *{line}* à ce moment.',
+        ':ok_hand: :metro: Le métro *{line}* ne rencontre aucun soucis actuellement.'
+    ],
+    'unknown_bus_line': [
+        '<@{user}> La ligne de bus *{line}* m\'est inconnue.',
+        '<@{user}> Je crois que la ligne de bus *{line}* n\'existe pas.',
+        '<@{user}> Le bus *{line}* est inconnu au bataillon.'
+    ],
+    'bus_line_disrupted': [
+        ':rotating_light: :oncoming_bus: Perturbation pour le bus *{line}*.',
+        ':warning: :oncoming_bus: Le bus *{line}* rencontre des soucis.'
+    ],
+    'bus_line_ok': [
+        ':heavy_check_mark: :oncoming_bus: RàS pour le funiculaire *{line}* à ce moment.',
+        ':ok_hand: :oncoming_bus: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
+    ],
+    'unknown_funicular_line': [
+        '<@{user}> Le funiculaire *{line}* m\'est inconnu.',
+        '<@{user}> Je crois que le funiculaire *{line}* n\'existe pas.',
+        '<@{user}> Le funiculaire *{line}* est inconnu au bataillon.'
+    ],
+    'funicular_line_disrupted': [
+        ':rotating_light: :train: Perturbation pour le funiculaire *{line}*.',
+        ':warning: :train: Le funiculaire *{line}* rencontre des soucis.'
+    ],
+    'funicular_line_ok': [
+        ':heavy_check_mark: :train: RàS pour le funiculaire *{line}* à ce moment.',
+        ':ok_hand: :train: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
     ]
 }

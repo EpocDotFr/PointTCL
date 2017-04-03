@@ -32,7 +32,7 @@ class Command:
 
 
 class HelpCommand(Command):
-    names = ['aide', 'help', 'comment', 'dafuq', 'wut']
+    names = ['aide', 'help', 'comment', 'dafuq', 'wut', 'hein']
 
     def run(self):
         help_answer = """
@@ -47,7 +47,9 @@ Exemples :
 > @pointtcl bus 31 bordel
 > @pointtcl funi f2
 
-En retour je vous dit s'il y a des merdes ou pas. Rien de compliqué.
+En retour je vous dit s'il y a des merdes ou pas.
+
+Bien à vous,
 """
 
         self.bot.say(help_answer, self.channel)
@@ -73,18 +75,45 @@ class TramStatusCommand(Command):
     names = ['tram']
 
     def run(self, line):
-        pass
+        line_object = TclLine.find_line(TclLineType.TRAM, line)
+
+        if not line_object:
+            self.bot.say_random('unknown_tram_line', self.channel, user=self.user, line=line.upper())
+            return
+
+        if line_object.is_disrupted:
+            self.bot.say_random('tram_line_disrupted', self.channel, user=self.user, line=line.upper())
+        else:
+            self.bot.say_random('tram_line_ok', self.channel, user=self.user, line=line.upper())
 
 
 class BusStatusCommand(Command):
     names = ['bus']
 
     def run(self, line):
-        pass
+        line_object = TclLine.find_line(TclLineType.BUS, line)
+
+        if not line_object:
+            self.bot.say_random('unknown_bus_line', self.channel, user=self.user, line=line.upper())
+            return
+
+        if line_object.is_disrupted:
+            self.bot.say_random('bus_line_disrupted', self.channel, user=self.user, line=line.upper())
+        else:
+            self.bot.say_random('bus_line_ok', self.channel, user=self.user, line=line.upper())
 
 
 class FunicularStatusCommand(Command):
     names = ['funiculaire', 'funi']
 
     def run(self, line):
-        pass
+        line_object = TclLine.find_line(TclLineType.BUS, line)
+
+        if not line_object:
+            self.bot.say_random('unknown_funicular_line', self.channel, user=self.user, line=line.upper())
+            return
+
+        if line_object.is_disrupted:
+            self.bot.say_random('funicular_line_disrupted', self.channel, user=self.user, line=line.upper())
+        else:
+            self.bot.say_random('funicular_line_ok', self.channel, user=self.user, line=line.upper())
