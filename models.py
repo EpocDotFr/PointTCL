@@ -1,5 +1,5 @@
 from database import Base, db_session
-from sqlalchemy_utils import JSONType, ArrowType
+from sqlalchemy_utils import ArrowType
 from enum import Enum
 import sqlalchemy
 
@@ -25,14 +25,12 @@ class TclLine(Base):
     type = sqlalchemy.Column(sqlalchemy.Enum(TclLineType), nullable=False)
     is_disrupted = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     disrupted_since = sqlalchemy.Column(ArrowType, default=None)
-    disruption_reasons = sqlalchemy.Column(JSONType, default=[])
 
-    def __init__(self, name=None, type=None, is_disrupted=False, disrupted_since=None, disruption_reasons=[]):
+    def __init__(self, name=None, type=None, is_disrupted=False, disrupted_since=None):
         self.name = name
         self.type = type
         self.is_disrupted = is_disrupted
         self.disrupted_since = disrupted_since
-        self.disruption_reasons = disruption_reasons
 
     @staticmethod
     def find_line(type, name):

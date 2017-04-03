@@ -2,11 +2,10 @@ answers = {
     'invalid_command': [
         '<@{user}> Hein ?',
         '<@{user}> Kékidi ?',
-        '<@{user}> No comprendo amigo.',
-        '<@{user}> https://youareagoodmama.files.wordpress.com/2016/07/dafuq.jpg',
+        '<@{user}> No comprendo.',
+        '<@{user}> https://i.giphy.com/IMuqnp96sdhyE.gif',
         '<@{user}> Désolé, j\'ai rien capté.',
-        '<@{user}> Certes. (Rien compris).',
-        '<@{user}> Wut?'
+        '<@{user}> Certes. (Rien compris).'
     ],
     'empty_message': [
         '<@{user}> C\'est malin d\'envoyer un message vide.',

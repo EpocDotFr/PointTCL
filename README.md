@@ -26,6 +26,7 @@ Available configuration parameters are:
   - `SLACK_BOT_TOKEN` The bot API token (you can find it when editing the bot settings)
   - `SLACK_BOT_ID` You cannot find it now. Fill the other `SLACK_*` configuration paremeters, then run the `python pointtcl.py botid` command (see below for more information)
   - `SLACK_BOT_NAME` The bot name
+  - `SLACK_DISCRUPTIONS_CHANNEL` The Slack channel in where to post automatic disruption messages
   - `GRANDLYON_LOGIN` Username used to login to your data.grandlyon.com account
   - `GRANDLYON_PASSWORD` Password used to login to your data.grandlyon.com account
 
@@ -53,11 +54,13 @@ python pointtcl.py initdb
 python pointtcl.py runbot
 ```
 
-### Check all lines for disruptions and send messages when there's one
+### Check for disruption on all lines and send message when there's one
 
 ```
 python pointtcl.py checklines
 ```
+
+This command also update the internal database of current disruptions.
 
 ## How it works
 

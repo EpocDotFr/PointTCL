@@ -66,7 +66,7 @@ def initdb():
     """Create and seed the database"""
     logging.info('Deleting and creating the database')
 
-    init_db()
+    init_db() # See in models.py
 
     grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
 
@@ -131,6 +131,21 @@ def initdb():
 
     logging.info('Done')
 
+
+@cli.command()
+def checklines():
+    """Check for disruption on all lines"""
+    bot = get_bot_instance()
+
+    logging.info('Checking for disruptions')
+
+    grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
+
+    disrupted_lines = grandlyon_client.get_disrupted_lines()
+
+    for disrupted_line in disrupted_lines:
+        # TODO
+        pass
 
 if __name__ == '__main__':
     cli()

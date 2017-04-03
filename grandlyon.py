@@ -1,5 +1,4 @@
 import requests
-import arrow
 
 
 __all__ = [
@@ -26,20 +25,21 @@ class Client:
 
         return response.json()
 
-    def get_line_disruptions(self, line):
-        """Get disruptions happening on a specific TCL line."""
+    def get_disrupted_lines(self, line=None):
+        """Get lines that are currently disrupted."""
         gl_disruptions = self._call('rdata/tcl_sytral.tclalertetrafic/all.json')['values']
-        disruptions = []
+        disrupted_lines = []
 
         for gl_disruption in gl_disruptions:
             gl_line = gl_disruption['ligne_com'].rstrip('AB').lower() # Remove the trailing A or B at the end of the line name (seems to be the line direction)
 
-            if gl_line == line and gl_disruption['message'] not in disruptions:
-                disrupted_since = arrow.get(gl_disruption['debut'])
+            if line and gl_line != line:
+                continue
 
-                disruptions.append(gl_disruption['message'])
+            if gl_line not in disrupted_lines:
+                disrupted_lines.append(gl_line)
 
-        return disruptions
+        return disrupted_lines
 
     def get_all_bus_lines(self):
         """Get all TCL bus lines."""
