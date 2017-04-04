@@ -7,13 +7,15 @@ Python script that powers the [Dealabs](https://www.dealabs.com/) office [Slack]
 
 ## Features
 
-  - Automatically advise everyone in a specific Slack channel about disruptions occuring on TCL lines (only when they starts and ends)
+  - The bot automatically advise everyone in a specified Slack channel about disruptions
+    - Which lines started or stopped to be disrupted
+    - When disruption started
   - Ask the bot to check the current status of a specific line using commands (see below for more information)
 
 ## Prerequisites
 
   - Python 3. May eventually works with Python 2 (not tested)
-  - Slack with an already-existing bot
+  - A Slack team with an already-existing bot
 
 ## Installation
 
@@ -86,6 +88,8 @@ python pointtcl.py initdb
 python pointtcl.py runbot
 ```
 
+You'll probably need [Supervisor](http://supervisord.org/) to make him always-running.
+
 #### Check for disruption on all lines and send message when there's one
 
 This command also update the internal database of current disruptions.
@@ -93,6 +97,10 @@ This command also update the internal database of current disruptions.
 ```
 python pointtcl.py checklines
 ```
+
+Best usage is to create a Cron job that run it every, say, 5 minutes:
+
+*/5 * * * * cd /path/to/pointtcl && python pointtcl.py checklines 2>&1
 
 ## How it works
 
