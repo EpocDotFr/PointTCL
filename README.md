@@ -100,7 +100,9 @@ python pointtcl.py checklines
 
 Best usage is to create a Cron job that run it every, say, 5 minutes:
 
+```
 */5 * * * * cd /path/to/pointtcl && python pointtcl.py checklines 2>&1
+```
 
 ## How it works
 
