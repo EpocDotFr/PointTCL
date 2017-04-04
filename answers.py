@@ -22,7 +22,7 @@ answers = {
         ':warning: :metro: Le métro *{line}* rencontre des soucis.'
     ],
     'subway_line_ok': [
-        ':heavy_check_mark: :metro: RàS sur le métro *{line}* à ce moment.',
+        ':heavy_check_mark: :metro: RàS sur le métro *{line}* actuellement.',
         ':ok_hand: :metro: Le métro *{line}* ne rencontre aucun soucis actuellement.'
     ],
     'unknown_bus_line': [
@@ -35,7 +35,7 @@ answers = {
         ':warning: :oncoming_bus: Le bus *{line}* rencontre des soucis.'
     ],
     'bus_line_ok': [
-        ':heavy_check_mark: :oncoming_bus: RàS pour le funiculaire *{line}* à ce moment.',
+        ':heavy_check_mark: :oncoming_bus: RàS pour le funiculaire *{line}* actuellement.',
         ':ok_hand: :oncoming_bus: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
     ],
     'unknown_funicular_line': [
@@ -48,7 +48,7 @@ answers = {
         ':warning: :train: Le funiculaire *{line}* rencontre des soucis.'
     ],
     'funicular_line_ok': [
-        ':heavy_check_mark: :train: RàS pour le funiculaire *{line}* à ce moment.',
+        ':heavy_check_mark: :train: RàS pour le funiculaire *{line}* actuellement.',
         ':ok_hand: :train: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
     ]
 }

@@ -7,6 +7,7 @@ import logging
 import click
 import commands
 import grandlyon
+import arrow
 
 
 def get_bot_instance(available_commands=[]):
@@ -137,15 +138,61 @@ def checklines():
     """Check for disruption on all lines"""
     bot = get_bot_instance()
 
-    logging.info('Checking for disruptions')
+    logging.info('Getting all current disruptions')
 
     grandlyon_client = grandlyon.Client(env('GRANDLYON_LOGIN'), env('GRANDLYON_PASSWORD'))
 
     disrupted_lines = grandlyon_client.get_disrupted_lines()
 
+    logging.info('Got {} disrupted lines to process'.format(len(disrupted_lines)))
+
+    logging.info('Processing new or ongoing disruptions')
+
+    disturbed_line_ids_in_gl = []
+
     for disrupted_line in disrupted_lines:
-        # TODO
-        pass
+        line_object = TclLine.find_line(disrupted_line)
+
+        if not line_object:
+            logging.warning('Line not found: {}'.format(disrupted_line))
+            continue
+
+        if not line_object.is_disrupted:
+            logging.info('Line {} of type {} just started to get disrupted'.format(disrupted_line, line_object.type))
+
+            line_object.is_disrupted = True
+            line_object.disrupted_since = arrow.now()
+
+            db_session.add(line_object)
+        else:
+            logging.info('Line {} of type {} already set as disrupted'.format(disrupted_line, line_object.type))
+
+        disturbed_line_ids_in_gl.append(disrupted_line)
+
+    logging.info('Processing finished disruptions')
+
+    disturbed_line_ids_in_db = TclLine.get_disturbed_line_ids()
+
+    finished_disruptions = list(set(disturbed_line_ids_in_db) - set(disturbed_line_ids_in_gl))
+
+    if finished_disruptions:
+        for line_name in finished_disruptions:
+            line_object = TclLine.find_line(line_name)
+
+            if not line_object:
+                logging.warning('Line not found: {}'.format(line_name))
+                continue
+
+            line_object.is_disrupted = False
+            line_object.disrupted_since = None
+
+            db_session.add(line_object)
+    else:
+        logging.info('No finished disruption to process')
+
+    db_session.commit()
+
+    logging.info('End of processing')
 
 if __name__ == '__main__':
     cli()

@@ -19,7 +19,7 @@ class Client:
     def _call(self, resource, parameters=None):
         url = self.endpoint + resource
 
-        response = requests.get(url, auth=(self.login, self.password), params=parameters)
+        response = requests.get(url, auth=(self.login, self.password), params=parameters, verify=False)
 
         response.raise_for_status()
 

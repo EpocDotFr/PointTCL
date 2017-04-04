@@ -33,18 +33,16 @@ class Command:
 
 class LineCommand(Command):
     def _check(self, line, unknown, disrupted, ok):
-        line_object = TclLine.find_line(TclLineType.SUBWAY, line)
-
-        line = line.upper()
+        line_object = TclLine.find_line_by_type(TclLineType.SUBWAY, line.lower())
 
         if not line_object:
-            self.bot.say_random(unknown, self.channel, user=self.user, line=line)
+            self.bot.say_random(unknown, self.channel, user=self.user, line=line.upper())
             return
 
         if line_object.is_disrupted:
-            self.bot.say_random(disrupted, self.channel, line=line)
+            self.bot.say_random(disrupted, self.channel, line=line.upper())
         else:
-            self.bot.say_random(ok, self.channel, line=line)
+            self.bot.say_random(ok, self.channel, line=line.upper())
 
 
 class HelpCommand(Command):

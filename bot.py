@@ -76,7 +76,8 @@ class Bot:
         self.slack_client.api_call(
             'chat.postMessage',
             channel=channel,
-            text=text
+            text=text,
+            as_user=True
         )
 
     def say_random(self, message_id, channel, **kvargs):

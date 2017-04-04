@@ -33,11 +33,25 @@ class TclLine(Base):
         self.disrupted_since = disrupted_since
 
     @staticmethod
-    def find_line(type, name):
+    def find_line_by_type(type, name):
         q = db_session.query(TclLine).filter(TclLine.type == type)
         q = q.filter(TclLine.name == name)
 
         return q.first()
+
+    @staticmethod
+    def find_line(name):
+        q = db_session.query(TclLine).filter(TclLine.name == name)
+
+        return q.first()
+
+    @staticmethod
+    def get_disturbed_line_ids():
+        q = db_session.query(TclLine).filter(TclLine.is_disrupted == True)
+
+        lines = q.all()
+
+        return [line.name for line in lines]
 
     def __repr__(self):
         return '<TclLine> #{} : {}'.format(self.id, self.name)
