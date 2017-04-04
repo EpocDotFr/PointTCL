@@ -1,21 +1,25 @@
 # PointTCL
 
 Python script that powers the [Dealabs](https://www.dealabs.com/) office [Slack](https://slack.com/) bot who talks about
-[TCL](http://www.tcl.fr/) disruptions, and more in the future.
+[TCL](http://www.tcl.fr/) disruptions.
 
 > TODO Screenshot
 
 ## Features
 
-> TODO
+  - Automatically advise everyone in a specific Slack channel about disruptions occuring on TCL lines (only when they starts and ends)
+  - Ask the bot to check the current status of a specific line using commands (see below for more information)
 
 ## Prerequisites
 
-Python 3. May eventually works with Python 2 (not tested).
+  - Python 3. May eventually works with Python 2 (not tested)
+  - Slack with an already-existing bot
 
 ## Installation
 
-Clone this repo, and then the usual `pip install -r requirements.txt`.
+  1. Clone this repo somewhere
+  2. `pip install -r requirements.txt`
+  3. `python pointtcl.py initdb`
 
 ## Configuration
 
@@ -25,16 +29,42 @@ Available configuration parameters are:
 
   - `SLACK_BOT_TOKEN` The bot API token (you can find it when editing the bot settings)
   - `SLACK_BOT_ID` You cannot find it now. Fill the other `SLACK_*` configuration paremeters, then run the `python pointtcl.py botid` command (see below for more information)
-  - `SLACK_BOT_NAME` The bot name
+  - `SLACK_BOT_NAME` The bot username (not his name or last name!)
   - `SLACK_DISRUPTIONS_CHANNEL` The Slack channel in where to post automatic disruption messages
-  - `GRANDLYON_LOGIN` Username used to login to your data.grandlyon.com account
+  - `GRANDLYON_LOGIN` Username used to login to your [data.grandlyon.com](data.grandlyon.com) account
   - `GRANDLYON_PASSWORD` Password used to login to your data.grandlyon.com account
 
 ## Usage
 
-### Get the bot ID
+### Bot commands
 
-After defining the available configuration values in your `.env` file, you can run this command to get your bot ID:
+Our bot is called `pointtcl`, but you'll obviously have to replace this name with your bot name.
+
+#### Get help
+
+> @pointtcl [aide|help|comment|dafuq|wut|hein]
+
+#### Get a subway line status
+
+> @pointtcl [métro|metro] <line name>
+
+#### Get a tram line status
+
+> @pointtcl tram <line name>
+
+#### Get a bus line status
+
+> @pointtcl bus <line name>
+
+#### Get a funicular line status
+
+> @pointtcl [funiculaire|funi] <line name>
+
+### CLI commands
+
+#### Get the bot ID
+
+After defining the `SLACK_*` configuration parameters in your `.env` file, you can run this command to get your bot ID:
 
 ```
 python pointtcl.py botid
@@ -42,25 +72,27 @@ python pointtcl.py botid
 
 Fill the `SLACK_BOT_ID` configuration parameter with the output.
 
-### (Re)Create and seed the database with every available lines
+#### (Re)Create and seed the database with every available lines
+
+This command will wipe out the database then re-create it from scratch.
 
 ```
 python pointtcl.py initdb
 ```
 
-### Connect the bot to the Slack RTM API and make him available to talk with
+#### Connect the bot to the Slack RTM API and make him available to talk with
 
 ```
 python pointtcl.py runbot
 ```
 
-### Check for disruption on all lines and send message when there's one
+#### Check for disruption on all lines and send message when there's one
+
+This command also update the internal database of current disruptions.
 
 ```
 python pointtcl.py checklines
 ```
-
-This command also update the internal database of current disruptions.
 
 ## How it works
 
