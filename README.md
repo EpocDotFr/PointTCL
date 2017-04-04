@@ -46,19 +46,19 @@ Our bot is called `pointtcl`, but you'll obviously have to replace this name wit
 
 #### Get a subway line status
 
-> @pointtcl [métro|metro] <line name>
+> @pointtcl [métro|metro] {{line name}}
 
 #### Get a tram line status
 
-> @pointtcl tram <line name>
+> @pointtcl tram {{line name}}
 
 #### Get a bus line status
 
-> @pointtcl bus <line name>
+> @pointtcl bus {{line name}}
 
 #### Get a funicular line status
 
-> @pointtcl [funiculaire|funi] <line name>
+> @pointtcl [funiculaire|funi] {{line name}}
 
 ### CLI commands
 

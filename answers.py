@@ -18,8 +18,8 @@ answers = {
         '<@{user}> Le métro *{line}* est inconnu au bataillon.'
     ],
     'subway_line_disrupted': [
-        ':rotating_light: :metro: Perturbation sur le métro *{line}*.',
-        ':warning: :metro: Le métro *{line}* rencontre des soucis.'
+        ':rotating_light: :metro: Perturbation sur le métro *{line}* débutée {since}.',
+        ':warning: :metro: Le métro *{line}* rencontre des soucis, ça a commencé {since}.'
     ],
     'subway_line_ok': [
         ':heavy_check_mark: :metro: RàS sur le métro *{line}* actuellement.',
@@ -31,12 +31,12 @@ answers = {
         '<@{user}> Le bus *{line}* est inconnu au bataillon.'
     ],
     'bus_line_disrupted': [
-        ':rotating_light: :oncoming_bus: Perturbation pour le bus *{line}*.',
-        ':warning: :oncoming_bus: Le bus *{line}* rencontre des soucis.'
+        ':rotating_light: :oncoming_bus: Perturbation pour le bus *{line}* débutée {since}.',
+        ':warning: :oncoming_bus: Le bus *{line}* rencontre des soucis, ça a commencé {since}.'
     ],
     'bus_line_ok': [
-        ':heavy_check_mark: :oncoming_bus: RàS pour le funiculaire *{line}* actuellement.',
-        ':ok_hand: :oncoming_bus: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
+        ':heavy_check_mark: :oncoming_bus: RàS pour le bus *{line}* actuellement.',
+        ':ok_hand: :oncoming_bus: Le bus *{line}* ne rencontre aucun soucis actuellement.'
     ],
     'unknown_funicular_line': [
         '<@{user}> Le funiculaire *{line}* m\'est inconnu.',
@@ -44,8 +44,8 @@ answers = {
         '<@{user}> Le funiculaire *{line}* est inconnu au bataillon.'
     ],
     'funicular_line_disrupted': [
-        ':rotating_light: :train: Perturbation pour le funiculaire *{line}*.',
-        ':warning: :train: Le funiculaire *{line}* rencontre des soucis.'
+        ':rotating_light: :train: Perturbation pour le funiculaire *{line}* débutée {since}.',
+        ':warning: :train: Le funiculaire *{line}* rencontre des soucis, ça a commencé {since}.'
     ],
     'funicular_line_ok': [
         ':heavy_check_mark: :train: RàS pour le funiculaire *{line}* actuellement.',

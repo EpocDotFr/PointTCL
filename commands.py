@@ -32,15 +32,15 @@ class Command:
 
 
 class LineCommand(Command):
-    def _check(self, line, unknown, disrupted, ok):
-        line_object = TclLine.find_line_by_type(TclLineType.SUBWAY, line.lower())
+    def _check(self, type, line, unknown, disrupted, ok):
+        line_object = TclLine.find_line_by_type(type, line.lower())
 
         if not line_object:
             self.bot.say_random(unknown, self.channel, user=self.user, line=line.upper())
             return
 
         if line_object.is_disrupted:
-            self.bot.say_random(disrupted, self.channel, line=line.upper())
+            self.bot.say_random(disrupted, self.channel, line=line.upper(), since=line_object.disrupted_since.humanize(locale='FR'))
         else:
             self.bot.say_random(ok, self.channel, line=line.upper())
 
@@ -73,25 +73,25 @@ class SubwayStatusCommand(LineCommand):
     names = ['métro', 'metro']
 
     def run(self, line):
-        self._check(line, 'unknown_subway_line', 'subway_line_disrupted', 'subway_line_ok')
+        self._check(TclLineType.SUBWAY, line, 'unknown_subway_line', 'subway_line_disrupted', 'subway_line_ok')
 
 
 class TramStatusCommand(LineCommand):
     names = ['tram']
 
     def run(self, line):
-        self._check(line, 'unknown_tram_line', 'tram_line_disrupted', 'tram_line_ok')
+        self._check(TclLineType.TRAM, line, 'unknown_tram_line', 'tram_line_disrupted', 'tram_line_ok')
 
 
 class BusStatusCommand(LineCommand):
     names = ['bus']
 
     def run(self, line):
-        self._check(line, 'unknown_bus_line', 'bus_line_disrupted', 'bus_line_ok')
+        self._check(TclLineType.BUS, line, 'unknown_bus_line', 'bus_line_disrupted', 'bus_line_ok')
 
 
 class FunicularStatusCommand(LineCommand):
     names = ['funiculaire', 'funi']
 
     def run(self, line):
-        self._check(line, 'unknown_funicular_line', 'funicular_line_disrupted', 'funicular_line_ok')
+        self._check(TclLineType.FUNICULAR, line, 'unknown_funicular_line', 'funicular_line_disrupted', 'funicular_line_ok')
