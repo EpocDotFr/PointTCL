@@ -1,4 +1,5 @@
 import requests
+import arrow
 
 
 __all__ = [
@@ -28,7 +29,9 @@ class Client:
     def get_disrupted_lines(self, line=None):
         """Get lines that are currently disrupted."""
         gl_disruptions = self._call('rdata/tcl_sytral.tclalertetrafic/all.json')['values']
-        disrupted_lines = []
+        disrupted_lines = {}
+
+        now = arrow.now()
 
         for gl_disruption in gl_disruptions:
             gl_line = gl_disruption['ligne_com'].rstrip('AB').lower() # Remove the trailing A or B at the end of the line name (seems to be the line direction)
@@ -36,10 +39,25 @@ class Client:
             if line and gl_line != line:
                 continue
 
-            # TODO Filter by start/end date
+            if 'debut' in gl_disruption:
+                start = arrow.get(gl_disruption['debut'])
+
+                if start > now:
+                    continue
+            else:
+                start = now
+
+            if 'fin' in gl_disruption:
+                end = arrow.get(gl_disruption['fin'])
+
+                if end <= now:
+                    continue
 
             if gl_line not in disrupted_lines:
-                disrupted_lines.append(gl_line)
+                disrupted_lines[gl_line] = {
+                    'started_at': start,
+                    'reason': gl_disruption['message'] if 'message' in gl_disruption else None
+                }
 
         return disrupted_lines
 

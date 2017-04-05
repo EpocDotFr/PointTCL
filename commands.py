@@ -40,7 +40,7 @@ class LineCommand(Command):
             return
 
         if line_object.is_disrupted:
-            self.bot.say_random(disrupted, self.channel, line=line.upper(), since=line_object.disrupted_since.humanize(locale='FR'))
+            self.bot.say_random(disrupted, self.channel, line=line.upper(), since=line_object.latest_disruption_started_at.humanize(locale='FR'), reason='\n _' + line_object.latest_disruption_reason + '_' if line_object.latest_disruption_reason else '')
         else:
             self.bot.say_random(ok, self.channel, line=line.upper())
 

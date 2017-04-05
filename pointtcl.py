@@ -7,7 +7,6 @@ import logging
 import click
 import commands
 import grandlyon
-import arrow
 
 
 def get_bot_instance(available_commands=[]):
@@ -148,32 +147,29 @@ def check_lines():
 
     logging.info('Processing new or ongoing disruptions')
 
-    disturbed_line_ids_in_gl = []
-
-    for disrupted_line in disrupted_lines:
-        line_object = TclLine.find_line(disrupted_line)
+    for line_name, disruption_infos in disrupted_lines.items():
+        line_object = TclLine.find_line(line_name)
 
         if not line_object:
-            logging.warning('Line not found: {}'.format(disrupted_line))
+            logging.warning('Line not found: {}'.format(line_name))
             continue
 
         if not line_object.is_disrupted:
-            logging.info('Line {} of type {} just started to get disrupted'.format(disrupted_line, line_object.type))
+            logging.info('Line {} of type {} just got disrupted'.format(line_name, line_object.type))
 
             line_object.is_disrupted = True
-            line_object.latest_disruption_started_at = arrow.now()
+            line_object.latest_disruption_started_at = disruption_infos['started_at']
+            line_object.latest_disruption_reason = disruption_infos['reason']
 
             db_session.add(line_object)
         else:
-            logging.info('Line {} of type {} already set as disrupted'.format(disrupted_line, line_object.type))
-
-        disturbed_line_ids_in_gl.append(disrupted_line)
+            logging.info('Line {} of type {} already set as disrupted'.format(line_name, line_object.type))
 
     logging.info('Processing finished disruptions')
 
     disturbed_line_ids_in_db = TclLine.get_disturbed_line_ids()
 
-    finished_disruptions = list(set(disturbed_line_ids_in_db) - set(disturbed_line_ids_in_gl))
+    finished_disruptions = list(set(disturbed_line_ids_in_db) - set(disrupted_lines.keys()))
 
     if finished_disruptions:
         for line_name in finished_disruptions:
@@ -184,7 +180,6 @@ def check_lines():
                 continue
 
             line_object.is_disrupted = False
-            line_object.latest_disruption_started_at = None
 
             db_session.add(line_object)
     else:
