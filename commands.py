@@ -1,4 +1,5 @@
 from models import *
+from pointtcl import create_database, check_lines
 import inspect
 
 
@@ -7,7 +8,10 @@ __all__ = [
     'SubwayStatusCommand',
     'TramStatusCommand',
     'BusStatusCommand',
-    'FunicularStatusCommand'
+    'FunicularStatusCommand',
+
+    'ResetDatabaseCommand',
+    'CheckNowCommand'
 ]
 
 
@@ -31,8 +35,19 @@ class Command:
         raise NotImplementedError('Must be implemented')
 
 
+class AdminCommand(Command):
+    _allowed_users = ['maxime']
+
+    def _is_user_allowed(self):
+        if self.user not in self._allowed_users:
+            self.bot.say('<@{user}> Vous n\'avez pas autorité sur moi. Et bim.'.format(user=self.user), self.channel)
+            return False
+
+        return True
+
+
 class LineCommand(Command):
-    def _check(self, type, line, unknown, disrupted, ok):
+    def _check_line(self, type, line, unknown, disrupted, ok):
         line_object = TclLine.find_line_by_type(type, line.lower())
 
         if not line_object:
@@ -73,25 +88,53 @@ class SubwayStatusCommand(LineCommand):
     names = ['métro', 'metro']
 
     def run(self, line):
-        self._check(TclLineType.SUBWAY, line, 'unknown_subway_line', 'subway_line_disrupted', 'subway_line_ok')
+        self._check_line(TclLineType.SUBWAY, line, 'unknown_subway_line', 'subway_line_disrupted', 'subway_line_ok')
 
 
 class TramStatusCommand(LineCommand):
     names = ['tram']
 
     def run(self, line):
-        self._check(TclLineType.TRAM, line, 'unknown_tram_line', 'tram_line_disrupted', 'tram_line_ok')
+        self._check_line(TclLineType.TRAM, line, 'unknown_tram_line', 'tram_line_disrupted', 'tram_line_ok')
 
 
 class BusStatusCommand(LineCommand):
     names = ['bus']
 
     def run(self, line):
-        self._check(TclLineType.BUS, line, 'unknown_bus_line', 'bus_line_disrupted', 'bus_line_ok')
+        self._check_line(TclLineType.BUS, line, 'unknown_bus_line', 'bus_line_disrupted', 'bus_line_ok')
 
 
 class FunicularStatusCommand(LineCommand):
     names = ['funiculaire', 'funi']
 
     def run(self, line):
-        self._check(TclLineType.FUNICULAR, line, 'unknown_funicular_line', 'funicular_line_disrupted', 'funicular_line_ok')
+        self._check_line(TclLineType.FUNICULAR, line, 'unknown_funicular_line', 'funicular_line_disrupted', 'funicular_line_ok')
+
+
+class ResetDatabaseCommand(AdminCommand):
+    names = ['resetdb']
+
+    def run(self):
+        if not self._is_user_allowed():
+            return
+
+        self.bot.say('<@{user}> Réinitialisation de la base de données.'.format(self.user), self.channel)
+
+        create_database()
+
+        self.bot.say('<@{user}> Daune.'.format(self.user), self.channel)
+
+
+class CheckNowCommand(AdminCommand):
+    names = ['verif']
+
+    def run(self):
+        if not self._is_user_allowed():
+            return
+
+        self.bot.say('<@{user}> Lancement de la vérification de toutes les lignes.'.format(self.user), self.channel)
+
+        check_lines()
+
+        self.bot.say('<@{user}> Daune.'.format(self.user), self.channel)
