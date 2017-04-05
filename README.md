@@ -7,10 +7,12 @@ Python script that powers the [Dealabs](https://www.dealabs.com/) office [Slack]
 
 ## Features
 
-  - The bot automatically advise everyone in a specified Slack channel about disruptions
+  - The bot automatically advise about current disruptions:
     - Which lines started or stopped to be disrupted
-    - When disruption started
-  - Ask the bot to check the current status of a specific line using commands (see below for more information)
+    - When disruption started and stopped
+    - Can post on multiple Slack channels
+    - Filter on specific lines
+  - Ask the bot to check the current status of a specific line using commands (see below for more information) with the same information as above
 
 ## Prerequisites
 
