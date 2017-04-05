@@ -19,7 +19,7 @@ class Client:
     def _call(self, resource, parameters=None):
         url = self.endpoint + resource
 
-        response = requests.get(url, auth=(self.login, self.password), params=parameters, verify=False)
+        response = requests.get(url, auth=(self.login, self.password), params=parameters)
 
         response.raise_for_status()
 
@@ -35,6 +35,8 @@ class Client:
 
             if line and gl_line != line:
                 continue
+
+            # TODO Filter by start/end date
 
             if gl_line not in disrupted_lines:
                 disrupted_lines.append(gl_line)
