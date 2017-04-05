@@ -24,13 +24,15 @@ class TclLine(Base):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     type = sqlalchemy.Column(sqlalchemy.Enum(TclLineType), nullable=False)
     is_disrupted = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
-    disrupted_since = sqlalchemy.Column(ArrowType, default=None)
+    latest_disruption_started_at = sqlalchemy.Column(ArrowType, default=None)
+    latest_disruption_finished_at = sqlalchemy.Column(ArrowType, default=None)
 
-    def __init__(self, name=None, type=None, is_disrupted=False, disrupted_since=None):
+    def __init__(self, name=None, type=None, is_disrupted=False, latest_disruption_started_at=None, latest_disruption_finished_at=None):
         self.name = name
         self.type = type
         self.is_disrupted = is_disrupted
-        self.disrupted_since = disrupted_since
+        self.latest_disruption_started_at = latest_disruption_started_at
+        self.latest_disruption_finished_at = latest_disruption_finished_at
 
     @staticmethod
     def find_line_by_type(type, name):

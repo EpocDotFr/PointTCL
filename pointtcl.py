@@ -36,7 +36,7 @@ def cli():
 
 
 @cli.command()
-def runbot():
+def run():
     """Run the bot himself"""
     available_commands = [getattr(commands, command)() for command in commands.__all__]
 
@@ -48,7 +48,7 @@ def runbot():
 
 
 @cli.command()
-def botid():
+def id():
     """Print the bot ID"""
     bot = get_bot_instance()
 
@@ -63,8 +63,8 @@ def botid():
 
 
 @cli.command()
-def initdb():
-    """Create and seed the database"""
+def create_database():
+    """Create then seed the database"""
     logging.info('Deleting and creating the database')
 
     init_db() # See in models.py
@@ -134,7 +134,7 @@ def initdb():
 
 
 @cli.command()
-def checklines():
+def check_lines():
     """Check for disruption on all lines"""
     bot = get_bot_instance()
 
@@ -161,7 +161,7 @@ def checklines():
             logging.info('Line {} of type {} just started to get disrupted'.format(disrupted_line, line_object.type))
 
             line_object.is_disrupted = True
-            line_object.disrupted_since = arrow.now()
+            line_object.latest_disruption_started_at = arrow.now()
 
             db_session.add(line_object)
         else:
@@ -184,11 +184,14 @@ def checklines():
                 continue
 
             line_object.is_disrupted = False
-            line_object.disrupted_since = None
+            line_object.latest_disruption_started_at = None
 
             db_session.add(line_object)
     else:
         logging.info('No finished disruption to process')
+
+    # TODO Send updates
+    # env('SLACK_DISRUPTIONS_CHANNELS')
 
     db_session.commit()
 

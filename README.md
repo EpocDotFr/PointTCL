@@ -23,7 +23,7 @@ Python script that powers the [Dealabs](https://www.dealabs.com/) office [Slack]
 
   1. Clone this repo somewhere
   2. `pip install -r requirements.txt`
-  3. `python pointtcl.py initdb`
+  3. `python pointtcl.py create_database`
 
 ## Configuration
 
@@ -32,9 +32,9 @@ Copy the `.env.example` file to `.env` and fill in the configuration parameters.
 Available configuration parameters are:
 
   - `SLACK_BOT_TOKEN` The bot API token (you can find it when editing the bot settings)
-  - `SLACK_BOT_ID` You cannot find it now. Fill the other `SLACK_*` configuration paremeters, then run the `python pointtcl.py botid` command (see below for more information)
+  - `SLACK_BOT_ID` You cannot find it now. Fill the other `SLACK_*` configuration paremeters, then run the `python pointtcl.py id` command (see below for more information)
   - `SLACK_BOT_NAME` The bot username (not his name or last name!)
-  - `SLACK_DISRUPTIONS_CHANNEL` The Slack channel in where to post automatic disruption messages
+  - `SLACK_DISRUPTIONS_CHANNELS` A comma-separated list of Slack channels in where to post automatic disruption messages. Empty to disable
   - `GRANDLYON_LOGIN` Username used to login to your [data.grandlyon.com](data.grandlyon.com) account
   - `GRANDLYON_PASSWORD` Password used to login to your data.grandlyon.com account
 
@@ -42,7 +42,7 @@ Available configuration parameters are:
 
 ### Bot commands
 
-Our bot is called `pointtcl`, but you'll obviously have to replace this name with your bot name.
+Our bot is called `pointtcl`, but you'll obviously have to replace this name with your own bot name.
 
 #### Get help
 
@@ -71,7 +71,7 @@ Our bot is called `pointtcl`, but you'll obviously have to replace this name wit
 After defining the `SLACK_*` configuration parameters in your `.env` file, you can run this command to get your bot ID:
 
 ```
-python pointtcl.py botid
+python pointtcl.py id
 ```
 
 Fill the `SLACK_BOT_ID` configuration parameter with the output.
@@ -81,13 +81,13 @@ Fill the `SLACK_BOT_ID` configuration parameter with the output.
 This command will wipe out the database then re-create it from scratch.
 
 ```
-python pointtcl.py initdb
+python pointtcl.py create_database
 ```
 
 #### Connect the bot to the Slack RTM API and make him available to talk with
 
 ```
-python pointtcl.py runbot
+python pointtcl.py run
 ```
 
 You'll probably need [Supervisor](http://supervisord.org/) to make him always-running.
@@ -97,13 +97,13 @@ You'll probably need [Supervisor](http://supervisord.org/) to make him always-ru
 This command also update the internal database of current disruptions.
 
 ```
-python pointtcl.py checklines
+python pointtcl.py check_lines
 ```
 
 Best usage is to create a Cron job that run it every, say, 5 minutes:
 
 ```
-*/5 * * * * cd /path/to/pointtcl && python pointtcl.py checklines 2>&1
+*/5 * * * * cd /path/to/pointtcl && python pointtcl.py check_lines 2>&1
 ```
 
 ## How it works
