@@ -61,7 +61,6 @@ def id():
         logging.error('Could not find bot user')
 
 
-@cli.command()
 def create_database():
     """Create then seed the database"""
     logging.info('Deleting and creating the database')
@@ -132,7 +131,12 @@ def create_database():
     logging.info('Done')
 
 
-@cli.command()
+@cli.command(name='create_database')
+def create_database_cmd():
+    """Create then seed the database"""
+    create_database()
+
+
 def check_lines():
     """Check for disruption on all lines"""
     bot = get_bot_instance()
@@ -186,11 +190,18 @@ def check_lines():
         logging.info('No finished disruption to process')
 
     # TODO Send updates
-    # env('SLACK_DISRUPTIONS_CHANNELS')
+    # env.list('SLACK_DISRUPTIONS_CHANNELS', default=[])
 
     db_session.commit()
 
     logging.info('End of processing')
+
+
+@cli.command(name='check_lines')
+def check_lines_cmd():
+    """Check for disruption on all lines"""
+    check_lines()
+
 
 if __name__ == '__main__':
     cli()

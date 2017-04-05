@@ -35,6 +35,7 @@ Available configuration parameters are:
   - `SLACK_BOT_ID` You cannot find it now. Fill the other `SLACK_*` configuration paremeters, then run the `python pointtcl.py id` command (see below for more information)
   - `SLACK_BOT_NAME` The bot username (not his name or last name!)
   - `SLACK_DISRUPTIONS_CHANNELS` A comma-separated list of Slack channels in where to post automatic disruption messages. Empty to disable
+  - `BOT_ADMINS` A comma-separated list of user IDs who can send admin commands to the bot. Empty to none
   - `GRANDLYON_LOGIN` Username used to login to your [data.grandlyon.com](data.grandlyon.com) account
   - `GRANDLYON_PASSWORD` Password used to login to your data.grandlyon.com account
 
@@ -63,6 +64,14 @@ Our bot is called `pointtcl`, but you'll obviously have to replace this name wit
 #### Get a funicular line status
 
 > @pointtcl [funiculaire|funi] {{line name}}
+
+#### Check current disruptions now (admin)
+
+> @pointtcl [verif|vérif]
+
+#### Reset the internal database (admin)
+
+> @pointtcl resetbdd
 
 ### CLI commands
 

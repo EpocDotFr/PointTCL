@@ -1,5 +1,6 @@
 from models import *
 from pointtcl import create_database, check_lines
+from envparse import env
 import inspect
 
 
@@ -9,7 +10,6 @@ __all__ = [
     'TramStatusCommand',
     'BusStatusCommand',
     'FunicularStatusCommand',
-
     'ResetDatabaseCommand',
     'CheckNowCommand'
 ]
@@ -36,10 +36,10 @@ class Command:
 
 
 class AdminCommand(Command):
-    _allowed_users = ['maxime']
-
     def _is_user_allowed(self):
-        if self.user not in self._allowed_users:
+        admins = env.list('BOT_ADMINS', default=[])
+
+        if self.user not in admins:
             self.bot.say('<@{user}> Vous n\'avez pas autorité sur moi. Et bim.'.format(user=self.user), self.channel)
             return False
 
@@ -113,28 +113,28 @@ class FunicularStatusCommand(LineCommand):
 
 
 class ResetDatabaseCommand(AdminCommand):
-    names = ['resetdb']
+    names = ['resetbdd']
 
     def run(self):
         if not self._is_user_allowed():
             return
 
-        self.bot.say('<@{user}> Réinitialisation de la base de données.'.format(self.user), self.channel)
+        self.bot.say('<@{user}> Réinitialisation de la base de données.'.format(user=self.user), self.channel)
 
         create_database()
 
-        self.bot.say('<@{user}> Daune.'.format(self.user), self.channel)
+        self.bot.say('<@{user}> Daune.'.format(user=self.user), self.channel)
 
 
 class CheckNowCommand(AdminCommand):
-    names = ['verif']
+    names = ['verif', 'vérif']
 
     def run(self):
         if not self._is_user_allowed():
             return
 
-        self.bot.say('<@{user}> Lancement de la vérification de toutes les lignes.'.format(self.user), self.channel)
+        self.bot.say('<@{user}> Lancement de la vérification de toutes les lignes.'.format(user=self.user), self.channel)
 
         check_lines()
 
-        self.bot.say('<@{user}> Daune.'.format(self.user), self.channel)
+        self.bot.say('<@{user}> Daune.'.format(user=self.user), self.channel)
