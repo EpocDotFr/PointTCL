@@ -23,7 +23,7 @@ answers = {
     ],
     'subway_line_ok': [
         ':heavy_check_mark: :metro: RàS sur le métro *{line}* actuellement.',
-        ':ok_hand: :metro: Le métro *{line}* ne rencontre aucun soucis actuellement.'
+        ':ok_hand: :metro: Le métro *{line}* ne rencontre aucun souci actuellement.'
     ],
     'unknown_bus_line': [
         '<@{user}> La ligne de bus *{line}* m\'est inconnue.',
@@ -36,7 +36,7 @@ answers = {
     ],
     'bus_line_ok': [
         ':heavy_check_mark: :oncoming_bus: RàS pour le bus *{line}* actuellement.',
-        ':ok_hand: :oncoming_bus: Le bus *{line}* ne rencontre aucun soucis actuellement.'
+        ':ok_hand: :oncoming_bus: Le bus *{line}* ne rencontre aucun souci actuellement.'
     ],
     'unknown_funicular_line': [
         '<@{user}> Le funiculaire *{line}* m\'est inconnu.',
@@ -49,7 +49,7 @@ answers = {
     ],
     'funicular_line_ok': [
         ':heavy_check_mark: :train: RàS pour le funiculaire *{line}* actuellement.',
-        ':ok_hand: :train: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
+        ':ok_hand: :train: Le funiculaire *{line}* ne rencontre aucun souci actuellement.'
     ],
     'disruption_start': [
         ':rotating_light: Début de perturbation pour les lignes suivantes :\n\n{lines}',
