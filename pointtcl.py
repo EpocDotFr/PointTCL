@@ -18,6 +18,19 @@ def get_bot_instance(available_commands=[]):
     )
 
 
+def get_human_line_type_name(type):
+    if type == TclLineType.SUBWAY:
+        return 'Métro'
+    elif type == TclLineType.TRAM:
+        return 'Tram'
+    elif type == TclLineType.BUS:
+        return 'Bus'
+    elif type == TclLineType.FUNICULAR:
+        return 'Funiculaire'
+    else:
+        return 'Type de ligne inconnu'
+
+
 @click.group()
 def cli():
     """Point TCL Slack bot"""
@@ -149,25 +162,35 @@ def check_lines():
 
     logging.info('Got {} disrupted lines to process'.format(len(disrupted_lines)))
 
+    disruption_start_lines = []
+    disruption_end_lines = []
+
     logging.info('Processing new or ongoing disruptions')
 
-    for line_name, disruption_infos in disrupted_lines.items():
-        line_object = TclLine.find_line(line_name)
+    if disrupted_lines:
+        for line_name, disruption_infos in disrupted_lines.items():
+            line_object = TclLine.find_line(line_name)
 
-        if not line_object:
-            logging.warning('Line not found: {}'.format(line_name))
-            continue
+            if not line_object:
+                logging.warning('Line not found: {}'.format(line_name))
+                continue
 
-        if not line_object.is_disrupted:
-            logging.info('Line {} of type {} just got disrupted'.format(line_name, line_object.type))
+            if not line_object.is_disrupted:
+                logging.info('Line {} of type {}: start of disruption'.format(line_name, line_object.type))
 
-            line_object.is_disrupted = True
-            line_object.latest_disruption_started_at = disruption_infos['started_at']
-            line_object.latest_disruption_reason = disruption_infos['reason']
+                line_object.is_disrupted = True
+                line_object.latest_disruption_started_at = disruption_infos['started_at']
+                line_object.latest_disruption_reason = disruption_infos['reason']
 
-            db_session.add(line_object)
-        else:
-            logging.info('Line {} of type {} already set as disrupted'.format(line_name, line_object.type))
+                db_session.add(line_object)
+
+                disruption_start_lines.append('*{line_type} {line_name}*{reason}'.format(
+                    line_type=get_human_line_type_name(line_object.type),
+                    line_name=line_name,
+                    reason=' (la raison est : _' + line_object.latest_disruption_reason + '_)' if line_object.latest_disruption_reason else ''
+                ))
+            else:
+                logging.info('Line {} of type {} already set as disrupted'.format(line_name, line_object.type))
 
     logging.info('Processing finished disruptions')
 
@@ -183,14 +206,31 @@ def check_lines():
                 logging.warning('Line not found: {}'.format(line_name))
                 continue
 
+            logging.info('Line {} of type {}: end of disruption'.format(line_name, line_object.type))
+
             line_object.is_disrupted = False
 
             db_session.add(line_object)
+
+            disruption_end_lines.append('*{line_type} {line_name}*{reason}'.format(
+                line_type=get_human_line_type_name(line_object.type),
+                line_name=line_name,
+                reason=' (la raison était : _' + line_object.latest_disruption_reason + '_)' if line_object.latest_disruption_reason else ''
+            ))
     else:
         logging.info('No finished disruption to process')
 
-    # TODO Send updates
-    # env.list('SLACK_DISRUPTIONS_CHANNELS', default=[])
+    recipient_channels = env.list('SLACK_DISRUPTIONS_CHANNELS', default=[])
+
+    if recipient_channels: # If there's channels to inform
+        logging.info('Sending updates to Slack')
+
+        for recipient_channel in recipient_channels:
+            if disruption_start_lines:
+                bot.say_random('disruption_start', recipient_channel, lines='  - ' + '\n  - '.join(disruption_start_lines))
+
+            if disruption_end_lines:
+                bot.say_random('disruption_end', recipient_channel, lines='  - ' + '\n  - '.join(disruption_end_lines))
 
     db_session.commit()
 

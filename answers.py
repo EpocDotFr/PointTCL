@@ -50,5 +50,13 @@ answers = {
     'funicular_line_ok': [
         ':heavy_check_mark: :train: RàS pour le funiculaire *{line}* actuellement.',
         ':ok_hand: :train: Le funiculaire *{line}* ne rencontre aucun soucis actuellement.'
+    ],
+    'disruption_start': [
+        ':rotating_light: Début de perturbation pour les lignes suivantes :\n\n{lines}',
+        ':warning: Attention, les lignes suivantes rencontrent des soucis :\n\n{lines}'
+    ],
+    'disruption_end': [
+        ':heavy_check_mark: Fin de perturbation pour les lignes suivantes :\n\n{lines}',
+        ':ok_hand: Les lignes suivantes ne rencontrent plus de soucis :\n\n{lines}'
     ]
 }

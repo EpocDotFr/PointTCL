@@ -66,7 +66,6 @@ class Bot:
         """Parse every incoming message and check if one or more was intented for the bot."""
         if slack_rtm_messages and len(slack_rtm_messages) > 0:
             for message in slack_rtm_messages:
-                print(message)
                 if message and 'type' in message and message['type'] == 'message' and 'subtype' not in message:
                     if 'text' in message and message['text'].startswith('<@' + self.id + '>'):
                         return message['text'], message['user'], message['channel']
