@@ -67,7 +67,7 @@ class HelpCommand(Command):
         help_answer = """
 Déjà : bonjour.
 
-Comment ça marche : en me mentionnant, le premier mot désigne sur quelle type de ligne vous souhaitez avoir des infos. Le deuxième le nom de la ligne.
+Comment ça marche : en me mentionnant, le premier mot désigne sur quel type de ligne vous souhaitez avoir des infos. Le deuxième le nom de la ligne.
 
 Exemples :
 
@@ -76,7 +76,7 @@ Exemples :
 > @pointtcl bus 31 bordel
 > @pointtcl funi f2
 
-En retour je vous dit s'il y a un soucis ou pas.
+En retour je vous dis s'il y a un souci ou pas.
 
 Bien à vous,
 """
