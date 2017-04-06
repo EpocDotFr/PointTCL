@@ -164,6 +164,7 @@ def check_lines():
 
     disruption_start_lines = []
     disruption_end_lines = []
+    lines_to_notify = env.list('DISRUPTIONS_LINES', default=[])
 
     logging.info('Processing new or ongoing disruptions')
 
@@ -184,11 +185,12 @@ def check_lines():
 
                 db_session.add(line_object)
 
-                disruption_start_lines.append('*{line_type} {line_name}*{reason}'.format(
-                    line_type=get_human_line_type_name(line_object.type),
-                    line_name=line_name,
-                    reason=' (la raison est : _' + line_object.latest_disruption_reason + '_)' if line_object.latest_disruption_reason else ''
-                ))
+                if line_name in lines_to_notify:
+                    disruption_start_lines.append('*{line_type} {line_name}*{reason}'.format(
+                        line_type=get_human_line_type_name(line_object.type),
+                        line_name=line_name,
+                        reason=' (la raison est : _' + line_object.latest_disruption_reason + '_)' if line_object.latest_disruption_reason else ''
+                    ))
             else:
                 logging.info('Line {} of type {} already set as disrupted'.format(line_name, line_object.type))
 
@@ -212,15 +214,16 @@ def check_lines():
 
             db_session.add(line_object)
 
-            disruption_end_lines.append('*{line_type} {line_name}*{reason}'.format(
-                line_type=get_human_line_type_name(line_object.type),
-                line_name=line_name,
-                reason=' (la raison était : _' + line_object.latest_disruption_reason + '_)' if line_object.latest_disruption_reason else ''
-            ))
+            if line_name in lines_to_notify:
+                disruption_end_lines.append('*{line_type} {line_name}*{reason}'.format(
+                    line_type=get_human_line_type_name(line_object.type),
+                    line_name=line_name,
+                    reason=' (la raison était : _' + line_object.latest_disruption_reason + '_)' if line_object.latest_disruption_reason else ''
+                ))
     else:
         logging.info('No finished disruption to process')
 
-    recipient_channels = env.list('SLACK_DISRUPTIONS_CHANNELS', default=[])
+    recipient_channels = env.list('SEND_DISRUPTION_MESSAGES_TO', default=[])
 
     if recipient_channels: # If there's channels to inform
         logging.info('Sending updates to Slack')

@@ -35,6 +35,7 @@ Available configuration parameters are:
   - `SLACK_BOT_ID` You cannot find it now. Fill the other `SLACK_*` configuration paremeters, then run the `python pointtcl.py id` command (see below for more information)
   - `SLACK_BOT_NAME` The bot username (not his name or last name!)
   - `SEND_DISRUPTION_MESSAGES_TO` A comma-separated list of Slack channel IDs in where to post automatic disruption messages. Empty to disable
+  - `DISRUPTIONS_LINES` A comma-separated list of allowed TCL line names when sending automatic updates about disruptions. Empty to not filter
   - `BOT_ADMINS` A comma-separated list of Slack user IDs who can send admin commands to the bot. Empty to none
   - `GRANDLYON_LOGIN` Username used to login to your [https://data.grandlyon.com/](data.grandlyon.com) account
   - `GRANDLYON_PASSWORD` Password used to login to your data.grandlyon.com account
