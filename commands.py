@@ -78,6 +78,8 @@ Exemples :
 
 En retour je vous dis s'il y a un souci ou pas.
 
+*Attention :* je ne suis disponible que sur le canal #transports.
+
 Bien à vous,
 """
 
