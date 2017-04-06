@@ -3,7 +3,9 @@
 Python script that powers the [Dealabs](https://www.dealabs.com/) office [Slack](https://slack.com/) bot who talks about
 [TCL](http://www.tcl.fr/) disruptions.
 
-> TODO Screenshot
+<p align="center">
+  <img src="https://github.com/EpocDotFr/PointTCL/raw/master/screenshot.png">
+</p>
 
 ## Features
 
@@ -18,6 +20,7 @@ Python script that powers the [Dealabs](https://www.dealabs.com/) office [Slack]
 
   - Python 3. May eventually works with Python 2 (not tested)
   - A Slack team with an already-existing bot
+  - A [Data Grand Lyon (fr)](https://data.grandlyon.com/) account
 
 ## Installation
 
@@ -37,7 +40,7 @@ Available configuration parameters are:
   - `SEND_DISRUPTION_MESSAGES_TO` A comma-separated list of Slack channel IDs in where to post automatic disruption messages. Empty to disable
   - `DISRUPTIONS_LINES` A comma-separated list of allowed TCL line names when sending automatic updates about disruptions. Empty to not filter
   - `BOT_ADMINS` A comma-separated list of Slack user IDs who can send admin commands to the bot. Empty to none
-  - `GRANDLYON_LOGIN` Username used to login to your [https://data.grandlyon.com/](data.grandlyon.com) account
+  - `GRANDLYON_LOGIN` Username used to login to your data.grandlyon.com account
   - `GRANDLYON_PASSWORD` Password used to login to your data.grandlyon.com account
 
 ## Usage
@@ -118,4 +121,9 @@ Best usage is to create a Cron job that run it every, say, 5 minutes:
 
 ## How it works
 
-> TODO
+The [Slack RTM API](https://api.slack.com/rtm) is used by the bot to check for incoming message from users. He also uses
+the [Slack Web API](https://api.slack.com/web) to send messages in the appropriate channels. A small [SQLite](https://en.wikipedia.org/wiki/SQLite)
+database is used to persist data.
+
+The [Data Grand Lyon API (fr)](https://data.grandlyon.com/equipements/alertes-trafic-du-rfseau-tcl/) is used to check for
+disruptions, which is simple [JSON](https://en.wikipedia.org/wiki/JSON) data served through [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol).
