@@ -15,6 +15,12 @@ __all__ = [
 ]
 
 
+subway_names = ['métro', 'metro']
+tram_names = ['tram']
+bus_names = ['bus']
+funicular_names = ['funiculaire', 'funi']
+
+
 class Command:
     names = []
     bot = None
@@ -46,7 +52,7 @@ class AdminCommand(Command):
         return True
 
 
-class LineCommand(Command):
+class CheckLineCommand(Command):
     def _check_line(self, type, line, unknown, disrupted, ok):
         line_object = TclLine.find_line_by_type(type, line.lower())
 
@@ -86,29 +92,56 @@ Bien à vous,
         self.bot.say(help_answer, self.channel)
 
 
-class SubwayStatusCommand(LineCommand):
-    names = ['métro', 'metro']
+class NextPassesCommand(Command):
+    names = ['prochain', 'next', 'suivant']
+
+    def _get_next_passes(self):
+        # TODO
+        pass
+
+    def run(self, type, line):
+        if type in subway_names:
+            type = TclLineType.SUBWAY
+        elif type in tram_names:
+            type = TclLineType.TRAM
+        elif type in bus_names:
+            type = TclLineType.BUS
+        elif type in funicular_names:
+            type = TclLineType.FUNICULAR
+        else:
+            self.bot.say('Je connais pas ce type de ligne.', self.channel)
+            return
+
+        line_object = TclLine.find_line_by_type(type, line.lower())
+
+        if not line_object:
+            self.bot.say_random(unknown, self.channel, user=self.user, line=line.upper())
+            return
+
+
+class SubwayStatusCommand(CheckLineCommand):
+    names = subway_names
 
     def run(self, line):
         self._check_line(TclLineType.SUBWAY, line, 'unknown_subway_line', 'subway_line_disrupted', 'subway_line_ok')
 
 
-class TramStatusCommand(LineCommand):
-    names = ['tram']
+class TramStatusCommand(CheckLineCommand):
+    names = tram_names
 
     def run(self, line):
         self._check_line(TclLineType.TRAM, line, 'unknown_tram_line', 'tram_line_disrupted', 'tram_line_ok')
 
 
-class BusStatusCommand(LineCommand):
-    names = ['bus']
+class BusStatusCommand(CheckLineCommand):
+    names = bus_names
 
     def run(self, line):
         self._check_line(TclLineType.BUS, line, 'unknown_bus_line', 'bus_line_disrupted', 'bus_line_ok')
 
 
-class FunicularStatusCommand(LineCommand):
-    names = ['funiculaire', 'funi']
+class FunicularStatusCommand(CheckLineCommand):
+    names = funicular_names
 
     def run(self, line):
         self._check_line(TclLineType.FUNICULAR, line, 'unknown_funicular_line', 'funicular_line_disrupted', 'funicular_line_ok')
