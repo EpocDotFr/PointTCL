@@ -82,7 +82,7 @@ class Bot:
 
     def say_random(self, message_id, channel, **kvargs):
         if message_id not in answers:
-            logging.error('Anwser ID ' + answers + ' does\'t exists')
+            logging.error('Anwser ID ' + message_id + ' does\'t exists')
             return
 
         self.say(random.choice(answers[message_id]).format(**kvargs), channel)

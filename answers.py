@@ -25,6 +25,19 @@ answers = {
         ':heavy_check_mark: :metro: RàS sur le métro *{line}* actuellement.',
         ':ok_hand: :metro: Le métro *{line}* ne rencontre aucun soucis actuellement.'
     ],
+    'unknown_tram_line': [
+        '<@{user}> Le tram *{line}* m\'est inconnu.',
+        '<@{user}> Je crois que la ligne de tram *{line}* n\'existe pas.',
+        '<@{user}> Le tram *{line}* est inconnu au bataillon.'
+    ],
+    'tram_line_disrupted': [
+        ':rotating_light: :tram: Perturbation sur le tram *{line}* débutée {since}.{reason}',
+        ':warning: :tram: Le tram *{line}* rencontre des soucis, ça a commencé {since}.{reason}'
+    ],
+    'tram_line_ok': [
+        ':heavy_check_mark: :tram: RàS sur le tram *{line}* actuellement.',
+        ':ok_hand: :tram: Le tram *{line}* ne rencontre aucun soucis actuellement.'
+    ],
     'unknown_bus_line': [
         '<@{user}> La ligne de bus *{line}* m\'est inconnue.',
         '<@{user}> Je crois que la ligne de bus *{line}* n\'existe pas.',
