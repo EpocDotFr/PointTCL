@@ -27,13 +27,6 @@ class TclLine(Base):
     latest_disruption_started_at = sqlalchemy.Column(ArrowType, default=None)
     latest_disruption_reason = sqlalchemy.Column(sqlalchemy.Text, default=None)
 
-    def __init__(self, name=None, type=None, is_disrupted=False, latest_disruption_started_at=None, latest_disruption_reason=None):
-        self.name = name
-        self.type = type
-        self.is_disrupted = is_disrupted
-        self.latest_disruption_started_at = latest_disruption_started_at
-        self.latest_disruption_reason = latest_disruption_reason
-
     @staticmethod
     def find_line_by_type(type, name):
         q = db_session.query(TclLine).filter(TclLine.type == type)
